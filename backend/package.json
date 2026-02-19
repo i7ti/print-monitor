@@ -1,15 +1,11 @@
 {
   "name": "print-monitor",
   "version": "1.0.0",
-  "type": "module",  // ← ADICIONE ESTA LINHA
+  "type": "module",
   "description": "Monitoramento de impressoras",
   "main": "backend/server.js",
   "scripts": {
-    "start": "node backend/server.js",
-    "build": "echo 'Build completo'"
-  },
-  "engines": {
-    "node": "18.x"
+    "start": "node backend/server.js"
   },
   "dependencies": {
     "express": "^4.18.2",

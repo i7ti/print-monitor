@@ -339,6 +339,31 @@
             text-align: center;
             color: #6c757d;
         }
+
+.logout-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #dc3545;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    font-weight: 600;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
     </style>
 </head>
 <body>
@@ -698,5 +723,20 @@
             mainContent.innerHTML = html;
         }
     </script>
+
+<!-- Botão de logout -->
+<div style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+    <button onclick="fazerLogout()" style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-weight: 600;">
+        🔓 Sair
+    </button>
+</div>
+
+<script>
+    async function fazerLogout() {
+        await fetch('/api/logout');
+        window.location.href = '/login.html';
+    }
+</script>
+
 </body>
 </html>
