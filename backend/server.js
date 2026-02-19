@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // USA A VARIÁVEL DE AMBIENTE!
 
 app.use(cors());
 app.use(express.json());
@@ -36,19 +36,14 @@ app.get('/api/historico', (req, res) => {
     }
 });
 
-// ROTA PRINCIPAL - Força a servir index.html
+// Rota principal
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 
-// ROTA CURINGA - Qualquer rota não reconhecida vai para index.html
-app.get('*', (req, res) => {
-    // Se não for uma requisição de API, serve o index.html
-    if (!req.url.startsWith('/api/')) {
-        res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
-    } else {
-        res.status(404).json({ erro: 'API não encontrada' });
-    }
+// Rota de teste
+app.get('/teste', (req, res) => {
+    res.send('Servidor funcionando!');
 });
 
 app.listen(PORT, () => {
