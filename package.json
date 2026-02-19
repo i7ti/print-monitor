@@ -11,7 +11,8 @@
     "node": "18.x"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "cors": "^2.8.5"
+    "express-simple-pass": "^2.2.1"
   }
 }
