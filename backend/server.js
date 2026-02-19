@@ -12,6 +12,12 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Garantir que pastas necessárias existem
+const clientesDir = path.join(__dirname, 'clientes');
+if (!fs.existsSync(clientesDir)) {
+    fs.mkdirSync(clientesDir, { recursive: true });
+}
+
 // Configurar sessão
 app.use(session({
     secret: 'minha-chave-secreta-super-segura',
@@ -93,6 +99,147 @@ app.get('/api/dados', (req, res) => {
 // Rota principal
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+});
+
+// =============================================
+// API PARA RECEBER DADOS DOS CLIENTES
+// =============================================
+
+// Configuração simples de segurança (token)
+const API_TOKEN = "meu-token-secreto-2026"; // Mude para algo seguro!
+
+// Middleware para verificar token
+function verificarToken(req, res, next) {
+    const token = req.headers['authorization'];
+    if (token === `Bearer ${API_TOKEN}`) {
+        next();
+    } else {
+        res.status(401).json({ erro: 'Token inválido' });
+    }
+}
+
+// Endpoint para receber dados do cliente
+app.post('/api/coletar', verificarToken, (req, res) => {
+    try {
+        const dadosCliente = req.body;
+        
+        // Validar dados mínimos
+        if (!dadosCliente.cliente || !dadosCliente.dados) {
+            return res.status(400).json({ erro: 'Dados incompletos' });
+        }
+        
+        // Caminho para salvar dados deste cliente
+        const clienteFileName = `dados_${dadosCliente.cliente.replace(/[^a-zA-Z0-9]/g, '_')}.json`;
+        const clienteFilePath = path.join(__dirname, 'clientes', clienteFileName);
+        
+        // Garantir que pasta clientes existe
+        const clientesDir = path.join(__dirname, 'clientes');
+        if (!fs.existsSync(clientesDir)) {
+            fs.mkdirSync(clientesDir);
+        }
+        
+        // Carregar histórico existente
+        let historico = [];
+        if (fs.existsSync(clienteFilePath)) {
+            historico = JSON.parse(fs.readFileSync(clienteFilePath, 'utf8'));
+        }
+        
+        // Adicionar novos dados
+        historico.push({
+            timestamp: new Date().toISOString(),
+            dados: dadosCliente.dados
+        });
+        
+        // Manter últimas 1000 leituras
+        if (historico.length > 1000) {
+            historico = historico.slice(-1000);
+        }
+        
+        // Salvar
+        fs.writeFileSync(clienteFilePath, JSON.stringify(historico, null, 2));
+        
+        // Também atualizar o dados.json principal (para compatibilidade)
+        const dadosPath = path.join(__dirname, 'dados.json');
+        let dadosPrincipais = [];
+        if (fs.existsSync(dadosPath)) {
+            dadosPrincipais = JSON.parse(fs.readFileSync(dadosPath, 'utf8'));
+        }
+        
+        dadosPrincipais.push({
+            timestamp: new Date().toISOString(),
+            cliente: dadosCliente.cliente,
+            dados: dadosCliente.dados
+        });
+        
+        if (dadosPrincipais.length > 100) {
+            dadosPrincipais = dadosPrincipais.slice(-100);
+        }
+        
+        fs.writeFileSync(dadosPath, JSON.stringify(dadosPrincipais, null, 2));
+        
+        res.json({ 
+            sucesso: true, 
+            mensagem: `Dados de ${dadosCliente.cliente} recebidos (${dadosCliente.dados.length} impressoras)`
+        });
+        
+    } catch (error) {
+        console.error('Erro ao processar dados:', error);
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+// Endpoint para listar clientes ativos
+app.get('/api/clientes', (req, res) => {
+    try {
+        const clientesDir = path.join(__dirname, 'clientes');
+        if (!fs.existsSync(clientesDir)) {
+            return res.json([]);
+        }
+        
+        const arquivos = fs.readdirSync(clientesDir);
+        const clientes = arquivos
+            .filter(f => f.endsWith('.json'))
+            .map(f => {
+                const nome = f.replace('dados_', '').replace('.json', '').replace(/_/g, ' ');
+                const stats = fs.statSync(path.join(clientesDir, f));
+                return {
+                    nome: nome,
+                    arquivo: f,
+                    ultimaAtualizacao: stats.mtime
+                };
+            });
+        
+        res.json(clientes);
+    } catch (error) {
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+// Endpoint para dados consolidados (o dashboard usa este)
+app.get('/api/dados', (req, res) => {
+    try {
+        const dadosPath = path.join(__dirname, 'dados.json');
+        if (fs.existsSync(dadosPath)) {
+            const dados = JSON.parse(fs.readFileSync(dadosPath, 'utf8'));
+            // Pegar últimos dados de cada cliente (mais recente)
+            const clientesMap = new Map();
+            
+            dados.reverse().forEach(item => {
+                if (!clientesMap.has(item.cliente)) {
+                    clientesMap.set(item.cliente, item.dados);
+                }
+            });
+            
+            // Consolidar todos os dados ativos
+            const todosDados = Array.from(clientesMap.values()).flat();
+            res.json(todosDados);
+        } else {
+            res.json([]);
+        }
+    } catch (error) {
+        console.error('Erro ao ler dados:', error);
+        res.json([]);
+    }
 });
 
 app.listen(PORT, () => {
