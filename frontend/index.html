@@ -1,0 +1,702 @@
+<!-- frontend/index.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Monitoramento Impressoras</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #f0f2f5;
+        }
+        
+        /* Header */
+        .main-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 300;
+        }
+        
+        .logo span {
+            font-weight: 700;
+            color: #ffd700;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .header-stat-item {
+            text-align: center;
+        }
+        
+        .header-stat-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .header-stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .config-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .config-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* Container principal */
+        .main-container {
+            max-width: 1600px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+        
+        /* Sidebar de Clientes */
+        .clientes-sidebar {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        
+        .sidebar-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .sidebar-header h3 {
+            color: #495057;
+            font-size: 16px;
+        }
+        
+        /* Campo de busca */
+        .busca-container {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .busca-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .busca-input:focus {
+            border-color: #2a5298;
+        }
+        
+        .clientes-lista {
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .cliente-item {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 5px;
+            margin-bottom: 2px;
+        }
+        
+        .cliente-item:hover {
+            background: #e9ecef;
+        }
+        
+        .cliente-item.selecionado {
+            background: #2a5298;
+            color: white;
+        }
+        
+        .cliente-item.selecionado .cliente-nome {
+            color: white;
+        }
+        
+        .cliente-item.selecionado .cliente-resumo {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .cliente-nome {
+            font-weight: 600;
+            color: #1e3c72;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .cliente-resumo {
+            font-size: 12px;
+            color: #6c757d;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .badge-offline {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .badge-online {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        /* Área Principal */
+        .main-content {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        .cliente-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .cliente-header h2 {
+            color: #1e3c72;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .cliente-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: #6c757d;
+            flex-wrap: wrap;
+        }
+        
+        .cliente-stats span {
+            font-weight: 600;
+            color: #1e3c72;
+        }
+        
+        .cards-resumo {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .card.pb {
+            background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+            color: white;
+        }
+        
+        .card.color {
+            background: linear-gradient(135deg, #c44536 0%, #e67e22 100%);
+            color: white;
+        }
+        
+        .card.total {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+        
+        .card-valor {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .card-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .tabela-impressoras {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .tabela-impressoras th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .tabela-impressoras td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+        
+        .tabela-impressoras tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status-online {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-offline {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .toner-indicator {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            border-radius: 4px;
+            text-align: center;
+            line-height: 25px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 3px;
+        }
+        
+        .toner-preto { background: #2c3e50; color: white; }
+        .toner-ciano { background: #3498db; color: white; }
+        .toner-magenta { background: #e83e8c; color: white; }
+        .toner-amarelo { background: #f1c40f; color: black; }
+        
+        .ultima-coleta {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #6c757d;
+        }
+        
+        .no-selection {
+            text-align: center;
+            padding: 50px;
+            color: #6c757d;
+        }
+        
+        .no-selection i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .mensagem-sem-resultado {
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>System <span>Print</span> Monitor</h1>
+            </div>
+            <div class="header-stats">
+                <div class="header-stat-item">
+                    <div class="header-stat-value" id="totalClientes">0</div>
+                    <div class="header-stat-label">Clientes</div>
+                </div>
+                <div class="header-stat-item">
+                    <div class="header-stat-value" id="totalImpressoras">0</div>
+                    <div class="header-stat-label">Impressoras</div>
+                </div>
+                <div class="header-stat-item">
+                    <div class="header-stat-value" id="totalPB">0</div>
+                    <div class="header-stat-label">Total PB</div>
+                </div>
+                <div class="header-stat-item">
+                    <div class="header-stat-value" id="totalCor">0</div>
+                    <div class="header-stat-label">Total Cor</div>
+                </div>
+            </div>
+            <button class="config-btn" onclick="window.open('http://localhost:3001/config', '_blank')">
+                ⚙️ Configurar
+            </button>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <!-- Sidebar Clientes -->
+        <aside class="clientes-sidebar">
+            <div class="sidebar-header">
+                <h3>👥 Clientes</h3>
+            </div>
+            
+            <!-- Campo de busca -->
+            <div class="busca-container">
+                <input type="text" 
+                       id="buscaCliente" 
+                       class="busca-input" 
+                       placeholder="🔍 Buscar cliente..." 
+                       onkeyup="filtrarClientes()">
+            </div>
+            
+            <div class="clientes-lista" id="clientesLista">
+                <div class="loading">Carregando...</div>
+            </div>
+        </aside>
+        
+        <!-- Conteúdo Principal -->
+        <main class="main-content" id="mainContent">
+            <div class="no-selection">
+                <i>🖨️</i>
+                <h3>Selecione um cliente</h3>
+                <p>Escolha um cliente na lista ao lado para visualizar as impressoras</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let todosDados = [];
+        let clientes = [];
+        let clienteSelecionado = null;
+
+        // Atualizar a cada 10 segundos
+        setInterval(carregarDados, 10000);
+        carregarDados();
+
+        async function carregarDados() {
+            try {
+                const response = await fetch('http://localhost:3000/api/dados');
+                todosDados = await response.json();
+                processarDados();
+            } catch (error) {
+                console.error('Erro:', error);
+            }
+        }
+
+        function processarDados() {
+            // Agrupar por cliente
+            const clientesMap = new Map();
+            
+            // Primeiro, identificar todos os clientes únicos
+            const clientesSet = new Set();
+            todosDados.forEach(imp => {
+                if (imp.cliente) {
+                    clientesSet.add(imp.cliente);
+                }
+            });
+            
+            // Inicializar todos os clientes
+            clientesSet.forEach(nomeCliente => {
+                clientesMap.set(nomeCliente, {
+                    nome: nomeCliente,
+                    impressoras: [],
+                    totalPB: 0,
+                    totalCor: 0,
+                    online: 0,
+                    offline: 0,
+                    ultimaColeta: null
+                });
+            });
+            
+            // Preencher com dados
+            todosDados.forEach(imp => {
+                const cliente = clientesMap.get(imp.cliente);
+                if (!cliente) return;
+                
+                cliente.impressoras.push(imp);
+                
+                if (imp.status === 'online') {
+                    cliente.online++;
+                    
+                    // Calcular contadores
+                    const pb = parseInt(imp.contadores?.preto) || 0;
+                    const cor = parseInt(imp.contadores?.cor) || 0;
+                    
+                    if (pb === 0 && cor === 0 && imp.contadores?.total) {
+                        const total = parseInt(imp.contadores.total) || 0;
+                        cliente.totalPB += Math.floor(total * 0.7);
+                        cliente.totalCor += Math.floor(total * 0.3);
+                    } else {
+                        cliente.totalPB += pb;
+                        cliente.totalCor += cor;
+                    }
+                    
+                    if (!cliente.ultimaColeta || new Date(imp.timestamp) > new Date(cliente.ultimaColeta)) {
+                        cliente.ultimaColeta = imp.timestamp;
+                    }
+                } else {
+                    cliente.offline++;
+                }
+            });
+            
+            // Converter para array e ordenar
+            clientes = Array.from(clientesMap.values())
+                .filter(c => c.impressoras.length > 0)
+                .sort((a, b) => a.nome.localeCompare(b.nome));
+            
+            atualizarHeader();
+            
+            // Atualizar a lista com base na busca atual
+            const busca = document.getElementById('buscaCliente')?.value || '';
+            if (busca === '') {
+                atualizarSidebar();
+            } else {
+                filtrarClientes();
+            }
+            
+            // Se tinha um cliente selecionado, manter
+            if (clienteSelecionado) {
+                const clienteAtual = clientes.find(c => c.nome === clienteSelecionado.nome);
+                if (clienteAtual) {
+                    mostrarCliente(clienteAtual);
+                }
+            }
+        }
+
+        function atualizarHeader() {
+            const totalClientes = clientes.length;
+            const totalImpressoras = todosDados.length;
+            const totalPB = clientes.reduce((acc, c) => acc + c.totalPB, 0);
+            const totalCor = clientes.reduce((acc, c) => acc + c.totalCor, 0);
+            
+            document.getElementById('totalClientes').textContent = totalClientes;
+            document.getElementById('totalImpressoras').textContent = totalImpressoras;
+            document.getElementById('totalPB').textContent = totalPB.toLocaleString('pt-BR');
+            document.getElementById('totalCor').textContent = totalCor.toLocaleString('pt-BR');
+        }
+
+        function atualizarSidebar() {
+            const lista = document.getElementById('clientesLista');
+            
+            if (clientes.length === 0) {
+                lista.innerHTML = '<div class="loading">Nenhum cliente</div>';
+                return;
+            }
+            
+            lista.innerHTML = clientes.map(cliente => {
+                const selecionado = clienteSelecionado?.nome === cliente.nome ? 'selecionado' : '';
+                const totalPaginas = cliente.totalPB + cliente.totalCor;
+                
+                return `
+                    <div class="cliente-item ${selecionado}" onclick="selecionarCliente('${cliente.nome}')">
+                        <div class="cliente-nome">
+                            <span>${cliente.nome}</span>
+                            <span>${cliente.impressoras.length}</span>
+                        </div>
+                        <div class="cliente-resumo">
+                            <span class="badge-online">● ${cliente.online}</span>
+                            <span class="badge-offline">○ ${cliente.offline}</span>
+                            <span>📄 ${totalPaginas.toLocaleString('pt-BR')}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filtrarClientes() {
+            const busca = document.getElementById('buscaCliente').value.toLowerCase();
+            const lista = document.getElementById('clientesLista');
+            
+            const clientesFiltrados = clientes.filter(c => 
+                c.nome.toLowerCase().includes(busca)
+            );
+            
+            if (clientesFiltrados.length === 0) {
+                lista.innerHTML = '<div class="mensagem-sem-resultado">Nenhum cliente encontrado</div>';
+                return;
+            }
+            
+            lista.innerHTML = clientesFiltrados.map(cliente => {
+                const selecionado = clienteSelecionado?.nome === cliente.nome ? 'selecionado' : '';
+                const totalPaginas = cliente.totalPB + cliente.totalCor;
+                
+                return `
+                    <div class="cliente-item ${selecionado}" onclick="selecionarCliente('${cliente.nome}')">
+                        <div class="cliente-nome">
+                            <span>${cliente.nome}</span>
+                            <span>${cliente.impressoras.length}</span>
+                        </div>
+                        <div class="cliente-resumo">
+                            <span class="badge-online">● ${cliente.online}</span>
+                            <span class="badge-offline">○ ${cliente.offline}</span>
+                            <span>📄 ${totalPaginas.toLocaleString('pt-BR')}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selecionarCliente(nomeCliente) {
+            clienteSelecionado = clientes.find(c => c.nome === nomeCliente);
+            if (clienteSelecionado) {
+                mostrarCliente(clienteSelecionado);
+                // Atualiza a sidebar para mostrar seleção
+                const busca = document.getElementById('buscaCliente')?.value || '';
+                if (busca === '') {
+                    atualizarSidebar();
+                } else {
+                    filtrarClientes();
+                }
+            }
+        }
+
+        function mostrarCliente(cliente) {
+            const mainContent = document.getElementById('mainContent');
+            
+            const totalPaginas = cliente.totalPB + cliente.totalCor;
+            const totalmenteOffline = cliente.online === 0 && cliente.offline > 0;
+            
+            let html = `
+                <div class="cliente-header">
+                    <h2>${cliente.nome}</h2>
+                    <div class="cliente-stats">
+                        <span>📊 Total: ${totalPaginas.toLocaleString('pt-BR')} páginas</span>
+                        <span>🖨️ ${cliente.impressoras.length} impressoras</span>
+                        <span>✅ ${cliente.online} online</span>
+                        <span>❌ ${cliente.offline} offline</span>
+                        ${totalmenteOffline ? '<span style="color: #dc3545;">⏸️ Todas offline</span>' : ''}
+                    </div>
+                </div>
+                
+                <div class="cards-resumo">
+                    <div class="card total">
+                        <div class="card-label">Total Páginas</div>
+                        <div class="card-valor">${totalPaginas.toLocaleString('pt-BR')}</div>
+                    </div>
+                    <div class="card pb">
+                        <div class="card-label">Preto & Branco</div>
+                        <div class="card-valor">${cliente.totalPB.toLocaleString('pt-BR')}</div>
+                    </div>
+                    <div class="card color">
+                        <div class="card-label">Colorido</div>
+                        <div class="card-valor">${cliente.totalCor.toLocaleString('pt-BR')}</div>
+                    </div>
+                    <div class="card" style="background: linear-gradient(135deg, #0b845c 0%, #2ecc71 100%); color: white;">
+                        <div class="card-label">Impressoras</div>
+                        <div class="card-valor">${cliente.impressoras.length}</div>
+                    </div>
+                </div>
+                
+                <table class="tabela-impressoras">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Nome</th>
+                            <th>Modelo</th>
+                            <th>IP</th>
+                            <th>Contador PB</th>
+                            <th>Contador Cor</th>
+                            <th>Total</th>
+                            <th>Toners</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            cliente.impressoras.forEach(imp => {
+                const statusClass = imp.status === 'online' ? 'status-online' : 'status-offline';
+                const statusText = imp.status === 'online' ? '● Online' : '○ Offline';
+                
+                // Calcular contadores
+                let pb = parseInt(imp.contadores?.preto) || 0;
+                let cor = parseInt(imp.contadores?.cor) || 0;
+                let total = parseInt(imp.contadores?.total) || 0;
+                
+                if (pb === 0 && cor === 0 && total > 0) {
+                    pb = Math.floor(total * 0.7);
+                    cor = Math.floor(total * 0.3);
+                }
+                
+                // Toners
+                let toners = '';
+                if (imp.toners) {
+                    if (imp.toners.toner_preto) {
+                        toners += `<span class="toner-indicator toner-preto" title="Preto ${imp.toners.toner_preto}%">P</span>`;
+                    }
+                    if (imp.toners.toner_ciano) {
+                        toners += `<span class="toner-indicator toner-ciano" title="Ciano ${imp.toners.toner_ciano}%">C</span>`;
+                    }
+                    if (imp.toners.toner_magenta) {
+                        toners += `<span class="toner-indicator toner-magenta" title="Magenta ${imp.toners.toner_magenta}%">M</span>`;
+                    }
+                    if (imp.toners.toner_amarelo) {
+                        toners += `<span class="toner-indicator toner-amarelo" title="Amarelo ${imp.toners.toner_amarelo}%">Y</span>`;
+                    }
+                }
+                
+                html += `
+                    <tr>
+                        <td class="${statusClass}">${statusText}</td>
+                        <td><strong>${imp.nome || 'N/A'}</strong></td>
+                        <td>${imp.modelo || 'N/A'}</td>
+                        <td>${imp.ip || 'N/A'}</td>
+                        <td>${pb.toLocaleString('pt-BR')}</td>
+                        <td>${cor.toLocaleString('pt-BR')}</td>
+                        <td><strong>${total.toLocaleString('pt-BR')}</strong></td>
+                        <td>${toners || 'N/A'}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+                
+                <div class="ultima-coleta">
+                    Última coleta: ${cliente.ultimaColeta ? new Date(cliente.ultimaColeta).toLocaleString() : 'Sem dados'}
+                </div>
+            `;
+            
+            mainContent.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+// config/impressoras.json
+[
+  {
+    "ip": "192.168.1.100",
+    "nome": "Ricoh_Matriz",
+    "cliente": "Cliente A",
+    "comunidade": "public",
+    "modelo": "Ricoh MP 3554"
+  },
+  {
+    "ip": "192.168.1.101",
+    "nome": "Konica_Filial",
+    "cliente": "Cliente A",
+    "comunidade": "public",
+    "modelo": "Konica Minolta C368"
+  },
+  {
+    "ip": "192.168.1.102",
+    "nome": "Brother_Admin",
+    "cliente": "Cliente B",
+    "comunidade": "public",
+    "modelo": "Brother MFC-L8900"
+  },
+  {
+    "ip": "192.168.1.103",
+    "nome": "HP_LaserJet",
+    "cliente": "Cliente C",
+    "comunidade": "public",
+    "modelo": "HP LaserJet M426"
+  }
+]
