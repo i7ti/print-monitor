@@ -511,7 +511,7 @@
             btn.style.cursor = 'not-allowed';
             
             // Fazer requisição para o servidor
-            fetch(`/api/forcar-coleta/${idCliente}`, {
+            fetch(`/api/forcar-coleta/${encodeURIComponent(idCliente)}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

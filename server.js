@@ -116,6 +116,61 @@ app.get('/api/debug', (req, res) => {
 });
 
 // =============================================
+// ROTAS PARA COLETA FORÇADA
+// =============================================
+
+// Rota para registrar solicitação de coleta forçada
+app.post('/api/forcar-coleta/:idCliente', (req, res) => {
+    try {
+        const { idCliente } = req.params;
+        
+        // Criar pasta de solicitações se não existir
+        const solicitacaoDir = path.join(__dirname, 'solicitacoes');
+        if (!fs.existsSync(solicitacaoDir)) {
+            fs.mkdirSync(solicitacaoDir);
+        }
+        
+        // Salvar solicitação em arquivo
+        const arquivoSolicitacao = path.join(solicitacaoDir, `${idCliente}.json`);
+        fs.writeFileSync(arquivoSolicitacao, JSON.stringify({
+            solicitadoEm: new Date().toISOString(),
+            cliente: idCliente
+        }));
+        
+        console.log(`📢 Solicitação de coleta registrada para ${idCliente}`);
+        res.json({ 
+            status: 'ok', 
+            mensagem: 'Solicitação registrada. O cliente coletará na próxima verificação.' 
+        });
+    } catch (error) {
+        console.error('Erro ao registrar solicitação:', error);
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+// Rota para cliente verificar se há solicitação
+app.get('/api/verificar-solicitacao/:idCliente', (req, res) => {
+    try {
+        const { idCliente } = req.params;
+        const arquivoSolicitacao = path.join(__dirname, 'solicitacoes', `${idCliente}.json`);
+        
+        // Verificar se arquivo existe
+        const solicitado = fs.existsSync(arquivoSolicitacao);
+        
+        // Se existir, remover após leitura (para não ficar repetindo)
+        if (solicitado) {
+            fs.unlinkSync(arquivoSolicitacao);
+            console.log(`✅ Solicitação atendida para ${idCliente}`);
+        }
+        
+        res.json({ solicitado });
+    } catch (error) {
+        console.error('Erro ao verificar solicitação:', error);
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+// =============================================
 // 2. MIDDLEWARE DE AUTENTICAÇÃO
 // =============================================
 app.use((req, res, next) => {
