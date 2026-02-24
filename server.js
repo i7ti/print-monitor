@@ -88,6 +88,33 @@ app.get('/api/logout', (req, res) => {
     res.json({ success: true });
 });
 
+// Rota de debug para ver quais dados foram recebidos
+app.get('/api/debug', (req, res) => {
+    try {
+        const dadosDir = path.join(__dirname, 'dados');
+        if (!fs.existsSync(dadosDir)) {
+            return res.json({ mensagem: 'Pasta dados não existe' });
+        }
+        
+        const arquivos = fs.readdirSync(dadosDir);
+        const info = {};
+        
+        arquivos.forEach(arquivo => {
+            if (arquivo.endsWith('.json')) {
+                const conteudo = JSON.parse(fs.readFileSync(path.join(dadosDir, arquivo), 'utf8'));
+                info[arquivo] = {
+                    tamanho: conteudo.length,
+                    ultimo: conteudo[conteudo.length - 1] || null
+                };
+            }
+        });
+        
+        res.json(info);
+    } catch (error) {
+        res.status(500).json({ erro: error.message });
+    }
+});
+
 // =============================================
 // 2. MIDDLEWARE DE AUTENTICAÇÃO
 // =============================================
@@ -126,7 +153,7 @@ app.use((req, res, next) => {
 // Servir arquivos estáticos do frontend
 app.use(express.static(path.join(__dirname, 'frontend')));
 
-// Rota para obter dados consolidados para o dashboard
+// Rota para obter dados consolidados para o dashboard (VERSÃO MELHORADA)
 app.get('/api/dados', (req, res) => {
     try {
         const dadosDir = path.join(__dirname, 'dados');
@@ -139,14 +166,52 @@ app.get('/api/dados', (req, res) => {
         
         arquivos.forEach(arquivo => {
             if (arquivo.endsWith('.json')) {
-                const dados = JSON.parse(fs.readFileSync(path.join(dadosDir, arquivo), 'utf8'));
-                if (dados.length > 0) {
+                const historico = JSON.parse(fs.readFileSync(path.join(dadosDir, arquivo), 'utf8'));
+                if (historico.length > 0) {
                     // Pega o último dado de cada cliente
-                    const ultimo = dados[dados.length - 1];
-                    todosDados.push({
-                        cliente: ultimo.dados.cliente,
+                    const ultimo = historico[historico.length - 1];
+                    
+                    // Extrair informações do cliente
+                    const clienteInfo = {
+                        nome: ultimo.dados.cliente,
+                        cidade: ultimo.dados.cidade || '',
+                        obra: ultimo.dados.obra || '',
                         ultimaAtualizacao: ultimo.timestamp,
-                        dados: ultimo.dados.dados
+                        impressoras: ultimo.dados.dados || []
+                    };
+                    
+                    // Calcular estatísticas
+                    const totalImpressoras = clienteInfo.impressoras.length;
+                    const online = clienteInfo.impressoras.filter(i => i.status === 'online').length;
+                    const offline = totalImpressoras - online;
+                    
+                    // Calcular contadores
+                    let totalPB = 0;
+                    let totalCor = 0;
+                    let totalGeral = 0;
+                    
+                    clienteInfo.impressoras.forEach(imp => {
+                        if (imp.status === 'online') {
+                            const pb = parseInt(imp.contadores?.preto) || 0;
+                            const cor = parseInt(imp.contadores?.cor) || 0;
+                            const total = parseInt(imp.contadores?.total) || 0;
+                            
+                            totalPB += pb;
+                            totalCor += cor;
+                            totalGeral += total;
+                        }
+                    });
+                    
+                    todosDados.push({
+                        ...clienteInfo,
+                        stats: {
+                            totalImpressoras,
+                            online,
+                            offline,
+                            totalPB,
+                            totalCor,
+                            totalGeral
+                        }
                     });
                 }
             }
@@ -154,6 +219,7 @@ app.get('/api/dados', (req, res) => {
         
         res.json(todosDados);
     } catch (error) {
+        console.error('Erro em /api/dados:', error);
         res.status(500).json({ erro: error.message });
     }
 });
