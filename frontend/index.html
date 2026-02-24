@@ -230,6 +230,9 @@
             font-size: 24px;
             font-weight: 300;
             color: #1e3c72;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
         }
         
         .cliente-titulo strong {
@@ -494,6 +497,52 @@
         let clientes = [];
         let clienteSelecionado = null;
 
+        // =============================================
+        // FUNÇÕES PARA COLETA FORÇADA
+        // =============================================
+        function forcarColetaCliente(idCliente) {
+            const btn = document.getElementById('btn-atualizar-cliente');
+            const textoOriginal = btn.innerHTML;
+            
+            // Desabilitar botão e mostrar loading
+            btn.innerHTML = '⏳ Solicitando...';
+            btn.disabled = true;
+            btn.style.background = '#6c757d';
+            btn.style.cursor = 'not-allowed';
+            
+            // Fazer requisição para o servidor
+            fetch(`/api/forcar-coleta/${idCliente}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    btn.innerHTML = '✅ Solicitado!';
+                    setTimeout(() => {
+                        btn.innerHTML = textoOriginal;
+                        btn.disabled = false;
+                        btn.style.background = '#28a745';
+                        btn.style.cursor = 'pointer';
+                    }, 2000);
+                } else {
+                    throw new Error(data.erro || 'Erro desconhecido');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                btn.innerHTML = '❌ Erro';
+                setTimeout(() => {
+                    btn.innerHTML = textoOriginal;
+                    btn.disabled = false;
+                    btn.style.background = '#28a745';
+                    btn.style.cursor = 'pointer';
+                }, 2000);
+            });
+        }
+
         // Atualizar a cada 10 segundos
         setInterval(carregarDados, 10000);
         carregarDados();
@@ -528,7 +577,6 @@
             let totalPaginas = 0;
             
             clientes.forEach(cliente => {
-                // CORREÇÃO: usar cliente.impressoras (não cliente.dados)
                 totalImpressoras += cliente.impressoras?.length || 0;
                 totalOnline += cliente.impressoras?.filter(i => i.status === 'online').length || 0;
                 cliente.impressoras?.forEach(imp => {
@@ -557,7 +605,6 @@
             
             lista.innerHTML = clientesFiltrados.map(cliente => {
                 const selecionado = clienteSelecionado?.nome === cliente.nome ? 'selecionado' : '';
-                // CORREÇÃO: usar cliente.impressoras
                 const totalImp = cliente.impressoras?.length || 0;
                 const online = cliente.impressoras?.filter(i => i.status === 'online').length || 0;
                 const offline = totalImp - online;
@@ -611,7 +658,6 @@
         function mostrarDetalhesCliente(cliente) {
             const content = document.getElementById('mainContent');
             
-            // CORREÇÃO: usar cliente.impressoras (NÃO cliente.dados)
             const impressoras = cliente.impressoras || [];
             const totalPaginas = impressoras.reduce((acc, i) => acc + (parseInt(i.contadores?.total) || 0), 0);
             const online = impressoras.filter(i => i.status === 'online').length;
@@ -734,6 +780,47 @@
             `;
             
             content.innerHTML = html;
+            
+            // =============================================
+            // ADICIONAR BOTÃO DE ATUALIZAÇÃO
+            // =============================================
+            setTimeout(() => {
+                // Verificar se já existe um botão
+                if (document.getElementById('btn-atualizar-cliente')) return;
+                
+                // Encontrar o header
+                const header = document.querySelector('.content-header');
+                if (!header) return;
+                
+                // Encontrar o título
+                const titulo = header.querySelector('.cliente-titulo');
+                if (!titulo) return;
+                
+                // Criar o botão
+                const btn = document.createElement('button');
+                btn.id = 'btn-atualizar-cliente';
+                btn.innerHTML = '🔄 Atualizar Agora';
+                btn.style.cssText = `
+                    background: #28a745;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 8px 16px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    margin-left: 15px;
+                    transition: all 0.3s;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    vertical-align: middle;
+                `;
+                
+                btn.onmouseover = () => btn.style.background = '#218838';
+                btn.onmouseout = () => btn.style.background = '#28a745';
+                btn.onclick = () => forcarColetaCliente(cliente.id);
+                
+                titulo.appendChild(btn);
+            }, 100);
         }
     </script>
 </body>
