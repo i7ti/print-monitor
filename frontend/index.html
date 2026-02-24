@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Print - Dashboard</title>
     <style>
+        /* === SEU CSS EXISTENTE (MANTIDO IGUAL) === */
         * {
             margin: 0;
             padding: 0;
@@ -17,7 +18,6 @@
             background: #f0f2f5;
         }
         
-        /* Header */
         .main-header {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
@@ -78,7 +78,6 @@
             background: rgba(255,255,255,0.3);
         }
         
-        /* Container principal */
         .main-container {
             max-width: 1600px;
             margin: 20px auto;
@@ -88,7 +87,6 @@
             gap: 20px;
         }
         
-        /* Sidebar de Clientes */
         .clientes-sidebar {
             background: white;
             border-radius: 15px;
@@ -215,7 +213,6 @@
             margin-top: 8px;
         }
         
-        /* Área Principal */
         .main-content {
             background: white;
             border-radius: 15px;
@@ -249,7 +246,6 @@
             flex-wrap: wrap;
         }
         
-        /* Cards de Resumo do Cliente */
         .resumo-cards {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -298,7 +294,6 @@
             opacity: 0.9;
         }
         
-        /* Tabela de Impressoras */
         .impressoras-section {
             padding: 0 20px 20px 20px;
         }
@@ -390,7 +385,6 @@
             color: #495057;
         }
         
-        /* Loading */
         .loading {
             text-align: center;
             padding: 50px;
@@ -415,7 +409,6 @@
             color: #6c757d;
         }
         
-        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -437,7 +430,6 @@
             .main-container {
                 grid-template-columns: 1fr;
             }
-            
             .resumo-cards {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -452,8 +444,8 @@
             </div>
             <div class="header-stats" id="headerStats">
                 <div class="header-stat-item">
-                    <div class="header-stat-value" id="totalClientes">1</div>
-                    <div class="header-stat-label">Cliente</div>
+                    <div class="header-stat-value" id="totalClientes">0</div>
+                    <div class="header-stat-label">Clientes</div>
                 </div>
                 <div class="header-stat-item">
                     <div class="header-stat-value" id="totalImpressoras">0</div>
@@ -468,44 +460,38 @@
                     <div class="header-stat-label">Páginas</div>
                 </div>
             </div>
-            <a href="/configuracao.html" class="config-btn">⚙️ Configurar</a>
         </div>
     </header>
     
     <div class="main-container">
-        <!-- Sidebar Clientes (apenas 1 cliente) -->
+        <!-- Sidebar de Clientes -->
         <aside class="clientes-sidebar">
             <div class="sidebar-header">
-                <h2>
-                    <i>👥</i> Cliente
-                </h2>
+                <h2><i>👥</i> Clientes</h2>
             </div>
-            
             <div class="busca-cliente">
-                <input type="text" id="buscaCliente" placeholder="🔍 Buscar..." onkeyup="filtrarUnicoCliente()">
+                <input type="text" id="buscaCliente" placeholder="🔍 Buscar cliente..." onkeyup="filtrarClientes()">
             </div>
-            
             <div class="clientes-lista" id="clientesLista">
                 <div class="loading">Carregando...</div>
             </div>
         </aside>
         
-        <!-- Conteúdo Principal -->
         <main class="main-content" id="mainContent">
             <div class="no-cliente">
                 <i>🖨️</i>
-                <h3>Selecione o cliente na lista</h3>
-                <p>Clique no cliente para visualizar as impressoras</p>
+                <h3>Selecione um cliente</h3>
+                <p>Clique em um cliente na lista para ver os detalhes</p>
             </div>
         </main>
     </div>
 
     <script>
-        let dadosCompletos = {
-            cliente: { nome: 'Carregando...' },
-            impressoras: []
-        };
+        // =============================================
+        // NOVO CÓDIGO PARA MÚLTIPLOS CLIENTES
+        // =============================================
         
+        let clientes = [];
         let clienteSelecionado = null;
 
         // Atualizar a cada 10 segundos
@@ -515,32 +501,43 @@
         async function carregarDados() {
             try {
                 const response = await fetch('/api/dados');
-                dadosCompletos = await response.json();
+                const dados = await response.json();
                 
-                // Garantir estrutura
-                if (!dadosCompletos.cliente) dadosCompletos.cliente = { nome: 'Cliente' };
-                if (!dadosCompletos.impressoras) dadosCompletos.impressoras = [];
+                // Agora dados é um ARRAY de clientes
+                clientes = dados;
                 
                 atualizarHeader();
                 atualizarSidebar();
                 
-                // Se tinha um cliente selecionado, mantém
+                // Se tinha um cliente selecionado, atualiza
                 if (clienteSelecionado) {
-                    mostrarDetalhesCliente(clienteSelecionado);
+                    const clienteAtual = clientes.find(c => c.cliente === clienteSelecionado.cliente);
+                    if (clienteAtual) {
+                        mostrarDetalhesCliente(clienteAtual);
+                    }
                 }
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro ao carregar dados:', error);
             }
         }
 
         function atualizarHeader() {
-            const totalImpressoras = dadosCompletos.impressoras.length;
-            const online = dadosCompletos.impressoras.filter(i => i.status === 'online').length;
-            const totalPaginas = dadosCompletos.impressoras.reduce((acc, i) => acc + (parseInt(i.contadores?.total) || 0), 0);
+            const totalClientes = clientes.length;
+            let totalImpressoras = 0;
+            let totalOnline = 0;
+            let totalPaginas = 0;
             
-            document.getElementById('totalClientes').textContent = '1';
+            clientes.forEach(cliente => {
+                totalImpressoras += cliente.dados?.length || 0;
+                totalOnline += cliente.dados?.filter(i => i.status === 'online').length || 0;
+                cliente.dados?.forEach(imp => {
+                    totalPaginas += parseInt(imp.contadores?.total) || 0;
+                });
+            });
+            
+            document.getElementById('totalClientes').textContent = totalClientes;
             document.getElementById('totalImpressoras').textContent = totalImpressoras;
-            document.getElementById('totalOnline').textContent = online;
+            document.getElementById('totalOnline').textContent = totalOnline;
             document.getElementById('totalPaginas').textContent = totalPaginas.toLocaleString('pt-BR');
         }
 
@@ -548,85 +545,97 @@
             const lista = document.getElementById('clientesLista');
             const busca = document.getElementById('buscaCliente').value.toLowerCase();
             
-            // Criar objeto do cliente para a sidebar
-            const clienteObj = {
-                nome: dadosCompletos.cliente.nome || 'Cliente',
-                impressoras: dadosCompletos.impressoras
-            };
+            const clientesFiltrados = clientes.filter(c => 
+                c.cliente?.toLowerCase().includes(busca)
+            );
             
-            // Aplicar filtro (se houver busca)
-            const nomeMatch = clienteObj.nome.toLowerCase().includes(busca);
-            
-            if (!nomeMatch && busca !== '') {
+            if (clientesFiltrados.length === 0) {
                 lista.innerHTML = '<div class="mensagem-sem-resultado">Nenhum cliente encontrado</div>';
                 return;
             }
             
-            const online = clienteObj.impressoras.filter(i => i.status === 'online').length;
-            const offline = clienteObj.impressoras.length - online;
-            const totalPaginas = clienteObj.impressoras.reduce((acc, i) => acc + (parseInt(i.contadores?.total) || 0), 0);
-            
-            lista.innerHTML = `
-                <div class="cliente-card ${clienteSelecionado ? 'selecionado' : ''}" onclick="selecionarCliente()">
-                    <div class="cliente-nome">
-                        ${clienteObj.nome}
-                        <span class="cliente-badge">${clienteObj.impressoras.length}</span>
-                    </div>
-                    <div class="cliente-resumo">
-                        <div class="resumo-item">
-                            <div class="resumo-valor">${online}</div>
-                            <div class="resumo-label">Online</div>
+            lista.innerHTML = clientesFiltrados.map(cliente => {
+                const selecionado = clienteSelecionado?.cliente === cliente.cliente ? 'selecionado' : '';
+                const totalImp = cliente.dados?.length || 0;
+                const online = cliente.dados?.filter(i => i.status === 'online').length || 0;
+                const offline = totalImp - online;
+                let totalPaginas = 0;
+                cliente.dados?.forEach(imp => {
+                    totalPaginas += parseInt(imp.contadores?.total) || 0;
+                });
+                
+                return `
+                    <div class="cliente-card ${selecionado}" onclick="selecionarCliente('${cliente.cliente}')">
+                        <div class="cliente-nome">
+                            ${cliente.cliente || 'Sem nome'}
+                            <span class="cliente-badge">${totalImp}</span>
                         </div>
-                        <div class="resumo-item">
-                            <div class="resumo-valor">${offline}</div>
-                            <div class="resumo-label">Offline</div>
+                        <div class="cliente-resumo">
+                            <div class="resumo-item">
+                                <div class="resumo-valor">${online}</div>
+                                <div class="resumo-label">Online</div>
+                            </div>
+                            <div class="resumo-item">
+                                <div class="resumo-valor">${offline}</div>
+                                <div class="resumo-label">Offline</div>
+                            </div>
+                        </div>
+                        <div class="cliente-resumo">
+                            <div class="resumo-item" style="background: #e2e3e5;">
+                                <div class="resumo-valor">${totalPaginas.toLocaleString('pt-BR')}</div>
+                                <div class="resumo-label">Páginas</div>
+                            </div>
+                        </div>
+                        <div class="cliente-status">
+                            <span>📅 Última: ${new Date(cliente.ultimaAtualizacao).toLocaleString()}</span>
                         </div>
                     </div>
-                    <div class="cliente-resumo">
-                        <div class="resumo-item" style="background: #e2e3e5;">
-                            <div class="resumo-valor">${totalPaginas.toLocaleString('pt-BR')}</div>
-                            <div class="resumo-label">Páginas</div>
-                        </div>
-                    </div>
-                    <div class="cliente-status">
-                        <span>📅 ${new Date().toLocaleDateString()}</span>
-                    </div>
-                </div>
-            `;
+                `;
+            }).join('');
         }
 
-        function selecionarCliente() {
-            const clienteObj = {
-                nome: dadosCompletos.cliente.nome || 'Cliente',
-                impressoras: dadosCompletos.impressoras
-            };
-            clienteSelecionado = clienteObj;
-            mostrarDetalhesCliente(clienteObj);
-            atualizarSidebar(); // Atualiza para mostrar selecionado
+        function selecionarCliente(nomeCliente) {
+            clienteSelecionado = clientes.find(c => c.cliente === nomeCliente);
+            if (clienteSelecionado) {
+                mostrarDetalhesCliente(clienteSelecionado);
+                atualizarSidebar();
+            }
         }
 
-        function filtrarUnicoCliente() {
+        function filtrarClientes() {
             atualizarSidebar();
         }
 
         function mostrarDetalhesCliente(cliente) {
             const content = document.getElementById('mainContent');
-            const titulo = document.querySelector('.cliente-titulo');
             
-            const totalPaginas = cliente.impressoras.reduce((acc, i) => acc + (parseInt(i.contadores?.total) || 0), 0);
-            const online = cliente.impressoras.filter(i => i.status === 'online').length;
-            const offline = cliente.impressoras.length - online;
+            const impressoras = cliente.dados || [];
+            const totalPaginas = impressoras.reduce((acc, i) => acc + (parseInt(i.contadores?.total) || 0), 0);
+            const online = impressoras.filter(i => i.status === 'online').length;
+            const offline = impressoras.length - online;
+            
+            // Calcular PB e Cor
+            let totalPB = 0;
+            let totalCor = 0;
+            impressoras.forEach(imp => {
+                if (imp.status === 'online') {
+                    totalPB += parseInt(imp.contadores?.preto) || 0;
+                    totalCor += parseInt(imp.contadores?.cor) || 0;
+                }
+            });
             
             let html = `
                 <div class="content-header">
                     <div class="cliente-titulo">
-                        Cliente: <strong>${cliente.nome}</strong>
+                        Cliente: <strong>${cliente.cliente}</strong>
                     </div>
                     <div class="info-extra">
                         <span>📊 Total: ${totalPaginas.toLocaleString('pt-BR')} páginas</span>
-                        <span>🖨️ ${cliente.impressoras.length} impressoras</span>
+                        <span>🖨️ ${impressoras.length} impressoras</span>
                         <span>✅ Online: ${online}</span>
                         <span>❌ Offline: ${offline}</span>
+                        <span>⚫ PB: ${totalPB.toLocaleString('pt-BR')}</span>
+                        <span>🔴 Cor: ${totalCor.toLocaleString('pt-BR')}</span>
                     </div>
                 </div>
                 
@@ -635,9 +644,17 @@
                         <div class="card-label">Total Páginas</div>
                         <div class="card-valor">${totalPaginas.toLocaleString('pt-BR')}</div>
                     </div>
+                    <div class="resumo-card pb">
+                        <div class="card-label">Preto & Branco</div>
+                        <div class="card-valor">${totalPB.toLocaleString('pt-BR')}</div>
+                    </div>
+                    <div class="resumo-card color">
+                        <div class="card-label">Colorido</div>
+                        <div class="card-valor">${totalCor.toLocaleString('pt-BR')}</div>
+                    </div>
                     <div class="resumo-card impressoras">
                         <div class="card-label">Impressoras</div>
-                        <div class="card-valor">${cliente.impressoras.length}</div>
+                        <div class="card-valor">${impressoras.length}</div>
                     </div>
                 </div>
                 
@@ -651,18 +668,21 @@
                                 <th>Modelo</th>
                                 <th>Setor</th>
                                 <th>IP</th>
-                                <th>Contador</th>
+                                <th>Contador PB</th>
+                                <th>Contador Cor</th>
+                                <th>Total</th>
                                 <th>Toners</th>
                             </tr>
                         </thead>
                         <tbody>
             `;
             
-            cliente.impressoras.forEach(imp => {
+            impressoras.forEach(imp => {
                 const statusClass = imp.status === 'online' ? 'status-online' : 'status-offline';
                 const statusText = imp.status === 'online' ? '● Online' : '○ Offline';
                 
-                // Contador
+                const pb = parseInt(imp.contadores?.preto) || 0;
+                const cor = parseInt(imp.contadores?.cor) || 0;
                 const total = parseInt(imp.contadores?.total) || 0;
                 
                 // Toners
@@ -689,6 +709,8 @@
                         <td>${imp.modelo || 'N/A'}</td>
                         <td><span class="setor-badge">${imp.setor || 'N/A'}</span></td>
                         <td>${imp.ip || 'N/A'}</td>
+                        <td class="valor-contador">${pb.toLocaleString('pt-BR')}</td>
+                        <td class="valor-contador">${cor.toLocaleString('pt-BR')}</td>
                         <td class="valor-contador">${total.toLocaleString('pt-BR')}</td>
                         <td><div class="toner-indicators">${toners || 'N/A'}</div></td>
                     </tr>
@@ -698,6 +720,9 @@
             html += `
                         </tbody>
                     </table>
+                    <div style="margin-top: 15px; font-size: 12px; color: #999; text-align: right;">
+                        Última atualização: ${new Date(cliente.ultimaAtualizacao).toLocaleString('pt-BR')}
+                    </div>
                 </div>
             `;
             
