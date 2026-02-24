@@ -1,0 +1,539 @@
+<!-- frontend/configuracao.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuração - System Print</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #f0f2f5;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 300;
+        }
+        
+        .header h1 span {
+            font-weight: 700;
+            color: #ffd700;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .card-header h2 {
+            color: #1e3c72;
+            font-size: 20px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-item label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        
+        .info-item input {
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .info-item input:focus {
+            border-color: #2a5298;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42,82,152,0.1);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: #1e3c72;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2a5298;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #1e3c72;
+        }
+        
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .impressora-item {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: grid;
+            grid-template-columns: 2fr 2fr 1.5fr 1.5fr 1.5fr 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .impressora-item input,
+        .impressora-item select {
+            padding: 8px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        .impressora-item input:focus,
+        .impressora-item select:focus {
+            border-color: #2a5298;
+            outline: none;
+        }
+        
+        .acoes {
+            display: flex;
+            gap: 5px;
+            justify-content: flex-end;
+        }
+        
+        .mensagem {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .mensagem.sucesso {
+            background: #28a745;
+        }
+        
+        .mensagem.erro {
+            background: #dc3545;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        .sem-impressoras {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+            font-style: italic;
+        }
+        
+        .dica {
+            background: #e7f3ff;
+            border-left: 4px solid #2a5298;
+            padding: 10px 15px;
+            margin: 10px 0;
+            font-size: 13px;
+            color: #1e3c72;
+        }
+        
+        @media (max-width: 1200px) {
+            .impressora-item {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>System <span>Print</span> - Configuração</h1>
+        <div class="header-buttons">
+            <button class="btn btn-success" onclick="salvarConfiguracao()">💾 SALVAR TUDO</button>
+            <button class="btn btn-primary" onclick="window.location.href='/'">📊 DASHBOARD</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2>📋 Dados do Cliente</h2>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Nome do Cliente *</label>
+                    <input type="text" id="clienteNome" placeholder="Ex: Empresa Alpha" value="Empresa Alpha">
+                </div>
+                <div class="info-item">
+                    <label>ID do Cliente</label>
+                    <input type="text" id="clienteId" placeholder="Ex: alpha_01" value="alpha_01">
+                </div>
+                <div class="info-item">
+                    <label>Endereço</label>
+                    <input type="text" id="clienteEndereco" placeholder="Endereço completo" value="Av. Paulista, 1000">
+                </div>
+                <div class="info-item">
+                    <label>Contato</label>
+                    <input type="text" id="clienteContato" placeholder="Nome e telefone" value="João - 11 99999-9999">
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>🖨️ Impressoras deste Cliente</h2>
+                <button class="btn btn-primary" onclick="adicionarImpressora()">➕ NOVA IMPRESSORA</button>
+            </div>
+            
+            <div class="dica">
+                💡 Use o botão <strong>💾 SALVAR ESTA</strong> ao lado de cada impressora para salvar individualmente, 
+                ou <strong>💾 SALVAR TUDO</strong> no topo para salvar todas as alterações de uma vez.
+            </div>
+            
+            <div id="impressoras-container">
+                <div class="loading">Carregando impressoras...</div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="mensagem" style="display: none;"></div>
+
+    <script>
+        // Configuração inicial
+        let config = {
+            cliente: {
+                nome: '',
+                id: '',
+                endereco: '',
+                contato: ''
+            },
+            impressoras: []
+        };
+
+        // =============================================
+        // CARREGAR CONFIGURAÇÃO DO SERVIDOR
+        // =============================================
+        async function carregarConfiguracao() {
+            try {
+                const response = await fetch('/api/cliente');
+                if (response.ok) {
+                    config = await response.json();
+                    console.log('Configuração carregada:', config);
+                    preencherFormulario();
+                } else {
+                    console.error('Erro ao carregar:', response.status);
+                    usarDadosExemplo();
+                }
+            } catch (error) {
+                console.error('Erro de conexão:', error);
+                usarDadosExemplo();
+            }
+        }
+
+        function usarDadosExemplo() {
+            config = {
+                cliente: {
+                    nome: 'Empresa Alpha',
+                    id: 'alpha_01',
+                    endereco: 'Av. Paulista, 1000',
+                    contato: 'João - 11 99999-9999'
+                },
+                impressoras: [
+                    {
+                        nome: 'Ricoh Matriz',
+                        modelo: 'MP 3554',
+                        ip: '192.168.0.10',
+                        setor: 'Diretoria',
+                        tipo: 'colorida'
+                    },
+                    {
+                        nome: 'Konica Filial',
+                        modelo: 'C368',
+                        ip: '192.168.0.11',
+                        setor: 'Financeiro',
+                        tipo: 'colorida'
+                    }
+                ]
+            };
+            preencherFormulario();
+            mostrarMensagem('Usando dados de exemplo', 'sucesso');
+        }
+
+        function preencherFormulario() {
+            document.getElementById('clienteNome').value = config.cliente.nome || '';
+            document.getElementById('clienteId').value = config.cliente.id || '';
+            document.getElementById('clienteEndereco').value = config.cliente.endereco || '';
+            document.getElementById('clienteContato').value = config.cliente.contato || '';
+            
+            renderizarImpressoras();
+        }
+
+        function renderizarImpressoras() {
+            const container = document.getElementById('impressoras-container');
+            
+            if (!config.impressoras || config.impressoras.length === 0) {
+                container.innerHTML = '<div class="sem-impressoras">Nenhuma impressora cadastrada. Clique em "NOVA IMPRESSORA" para adicionar.</div>';
+                return;
+            }
+            
+            container.innerHTML = config.impressoras.map((imp, idx) => `
+                <div class="impressora-item" data-idx="${idx}">
+                    <input type="text" 
+                           value="${imp.nome || ''}" 
+                           placeholder="Nome da impressora"
+                           onchange="atualizarImpressora(${idx}, 'nome', this.value)">
+                    
+                    <input type="text" 
+                           value="${imp.modelo || ''}" 
+                           placeholder="Modelo"
+                           onchange="atualizarImpressora(${idx}, 'modelo', this.value)">
+                    
+                    <input type="text" 
+                           value="${imp.ip || ''}" 
+                           placeholder="Endereço IP"
+                           onchange="atualizarImpressora(${idx}, 'ip', this.value)">
+                    
+                    <input type="text" 
+                           value="${imp.setor || ''}" 
+                           placeholder="Setor"
+                           onchange="atualizarImpressora(${idx}, 'setor', this.value)">
+                    
+                    <select onchange="atualizarImpressora(${idx}, 'tipo', this.value)">
+                        <option value="colorida" ${imp.tipo === 'colorida' ? 'selected' : ''}>Colorida</option>
+                        <option value="pb" ${imp.tipo === 'pb' || !imp.tipo ? 'selected' : ''}>Preto e Branco</option>
+                    </select>
+                    
+                    <div class="acoes">
+                        <button class="btn btn-success btn-sm" onclick="salvarImpressora(${idx})" title="Salvar esta impressora">💾 SALVAR</button>
+                        <button class="btn btn-danger btn-sm" onclick="removerImpressora(${idx})" title="Remover impressora">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function adicionarImpressora() {
+            if (!config.impressoras) {
+                config.impressoras = [];
+            }
+            
+            config.impressoras.push({
+                nome: 'Nova Impressora',
+                modelo: '',
+                ip: '',
+                setor: '',
+                tipo: 'pb'
+            });
+            renderizarImpressoras();
+            mostrarMensagem('Nova impressora adicionada. Clique em 💾 SALVAR para guardar.', 'sucesso');
+        }
+
+        function removerImpressora(idx) {
+            if (confirm('Remover esta impressora?')) {
+                config.impressoras.splice(idx, 1);
+                renderizarImpressoras();
+                mostrarMensagem('Impressora removida', 'sucesso');
+            }
+        }
+
+        function atualizarImpressora(idx, campo, valor) {
+            if (!config.impressoras[idx]) {
+                config.impressoras[idx] = {};
+            }
+            config.impressoras[idx][campo] = valor;
+        }
+
+        // =============================================
+        // SALVAR IMPRESSORA INDIVIDUAL
+        // =============================================
+        async function salvarImpressora(idx) {
+            // Atualizar dados do cliente com os valores dos campos
+            config.cliente = {
+                nome: document.getElementById('clienteNome').value,
+                id: document.getElementById('clienteId').value,
+                endereco: document.getElementById('clienteEndereco').value,
+                contato: document.getElementById('clienteContato').value
+            };
+            
+            console.log('Salvando impressora específica:', config.impressoras[idx]);
+            
+            try {
+                const response = await fetch('/api/cliente/salvar', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+                
+                const resultado = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensagem(`✅ Impressora "${config.impressoras[idx].nome || idx}" salva!`, 'sucesso');
+                } else {
+                    mostrarMensagem('❌ Erro ao salvar: ' + (resultado.erro || 'desconhecido'), 'erro');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                mostrarMensagem('❌ Erro de conexão com o servidor', 'erro');
+            }
+        }
+
+        // =============================================
+        // SALVAR TUDO
+        // =============================================
+        async function salvarConfiguracao() {
+            // Atualizar dados do cliente com os valores dos campos
+            config.cliente = {
+                nome: document.getElementById('clienteNome').value,
+                id: document.getElementById('clienteId').value,
+                endereco: document.getElementById('clienteEndereco').value,
+                contato: document.getElementById('clienteContato').value
+            };
+            
+            console.log('Salvando configuração completa:', config);
+            
+            try {
+                const response = await fetch('/api/cliente/salvar', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+                
+                const resultado = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensagem('✅ Configuração completa salva com sucesso!', 'sucesso');
+                } else {
+                    mostrarMensagem('❌ Erro ao salvar: ' + (resultado.erro || 'desconhecido'), 'erro');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                mostrarMensagem('❌ Erro de conexão com o servidor', 'erro');
+            }
+        }
+
+        function mostrarMensagem(texto, tipo) {
+            const msgDiv = document.getElementById('mensagem');
+            msgDiv.style.display = 'block';
+            msgDiv.className = `mensagem ${tipo}`;
+            msgDiv.textContent = texto;
+            
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Inicializar
+        carregarConfiguracao();
+    </script>
+</body>
+</html>

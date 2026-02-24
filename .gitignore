@@ -4,3 +4,5 @@ node_modules/
 .env
 backend/dados.json
 config/impressoras.json
+# Dados dos clientes
+dados/
