@@ -488,7 +488,7 @@
 
     <script>
         // =============================================
-        // NOVO CÓDIGO PARA MÚLTIPLOS CLIENTES
+        // CÓDIGO CORRIGIDO PARA A ESTRUTURA DO SERVIDOR
         // =============================================
         
         let clientes = [];
@@ -503,7 +503,7 @@
                 const response = await fetch('/api/dados');
                 const dados = await response.json();
                 
-                // Agora dados é um ARRAY de clientes
+                // Dados é um ARRAY de clientes
                 clientes = dados;
                 
                 atualizarHeader();
@@ -511,7 +511,7 @@
                 
                 // Se tinha um cliente selecionado, atualiza
                 if (clienteSelecionado) {
-                    const clienteAtual = clientes.find(c => c.cliente === clienteSelecionado.cliente);
+                    const clienteAtual = clientes.find(c => c.nome === clienteSelecionado.nome);
                     if (clienteAtual) {
                         mostrarDetalhesCliente(clienteAtual);
                     }
@@ -528,9 +528,10 @@
             let totalPaginas = 0;
             
             clientes.forEach(cliente => {
-                totalImpressoras += cliente.dados?.length || 0;
-                totalOnline += cliente.dados?.filter(i => i.status === 'online').length || 0;
-                cliente.dados?.forEach(imp => {
+                // CORREÇÃO: usar cliente.impressoras (não cliente.dados)
+                totalImpressoras += cliente.impressoras?.length || 0;
+                totalOnline += cliente.impressoras?.filter(i => i.status === 'online').length || 0;
+                cliente.impressoras?.forEach(imp => {
                     totalPaginas += parseInt(imp.contadores?.total) || 0;
                 });
             });
@@ -546,7 +547,7 @@
             const busca = document.getElementById('buscaCliente').value.toLowerCase();
             
             const clientesFiltrados = clientes.filter(c => 
-                c.cliente?.toLowerCase().includes(busca)
+                c.nome?.toLowerCase().includes(busca)
             );
             
             if (clientesFiltrados.length === 0) {
@@ -555,19 +556,20 @@
             }
             
             lista.innerHTML = clientesFiltrados.map(cliente => {
-                const selecionado = clienteSelecionado?.cliente === cliente.cliente ? 'selecionado' : '';
-                const totalImp = cliente.dados?.length || 0;
-                const online = cliente.dados?.filter(i => i.status === 'online').length || 0;
+                const selecionado = clienteSelecionado?.nome === cliente.nome ? 'selecionado' : '';
+                // CORREÇÃO: usar cliente.impressoras
+                const totalImp = cliente.impressoras?.length || 0;
+                const online = cliente.impressoras?.filter(i => i.status === 'online').length || 0;
                 const offline = totalImp - online;
                 let totalPaginas = 0;
-                cliente.dados?.forEach(imp => {
+                cliente.impressoras?.forEach(imp => {
                     totalPaginas += parseInt(imp.contadores?.total) || 0;
                 });
                 
                 return `
-                    <div class="cliente-card ${selecionado}" onclick="selecionarCliente('${cliente.cliente}')">
+                    <div class="cliente-card ${selecionado}" onclick="selecionarCliente('${cliente.nome}')">
                         <div class="cliente-nome">
-                            ${cliente.cliente || 'Sem nome'}
+                            ${cliente.nome || 'Sem nome'}
                             <span class="cliente-badge">${totalImp}</span>
                         </div>
                         <div class="cliente-resumo">
@@ -595,7 +597,7 @@
         }
 
         function selecionarCliente(nomeCliente) {
-            clienteSelecionado = clientes.find(c => c.cliente === nomeCliente);
+            clienteSelecionado = clientes.find(c => c.nome === nomeCliente);
             if (clienteSelecionado) {
                 mostrarDetalhesCliente(clienteSelecionado);
                 atualizarSidebar();
@@ -609,7 +611,8 @@
         function mostrarDetalhesCliente(cliente) {
             const content = document.getElementById('mainContent');
             
-            const impressoras = cliente.dados || [];
+            // CORREÇÃO: usar cliente.impressoras (NÃO cliente.dados)
+            const impressoras = cliente.impressoras || [];
             const totalPaginas = impressoras.reduce((acc, i) => acc + (parseInt(i.contadores?.total) || 0), 0);
             const online = impressoras.filter(i => i.status === 'online').length;
             const offline = impressoras.length - online;
@@ -627,7 +630,11 @@
             let html = `
                 <div class="content-header">
                     <div class="cliente-titulo">
-                        Cliente: <strong>${cliente.cliente}</strong>
+                        Cliente: <strong>${cliente.nome}</strong>
+                        <span style="font-size: 14px; margin-left: 15px; color: #666;">
+                            ${cliente.cidade ? `📍 ${cliente.cidade}` : ''} 
+                            ${cliente.obra ? `- Obra: ${cliente.obra}` : ''}
+                        </span>
                     </div>
                     <div class="info-extra">
                         <span>📊 Total: ${totalPaginas.toLocaleString('pt-BR')} páginas</span>
