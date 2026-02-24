@@ -153,7 +153,7 @@ app.use((req, res, next) => {
 // Servir arquivos estáticos do frontend
 app.use(express.static(path.join(__dirname, 'frontend')));
 
-// Rota para obter dados consolidados para o dashboard (VERSÃO MELHORADA)
+// Rota para obter dados consolidados para o dashboard (VERSÃO COM ID ÚNICO)
 app.get('/api/dados', (req, res) => {
     try {
         const dadosDir = path.join(__dirname, 'dados');
@@ -171,9 +171,15 @@ app.get('/api/dados', (req, res) => {
                     // Pega o último dado de cada cliente
                     const ultimo = historico[historico.length - 1];
                     
+                    // Extrair ID do nome do arquivo (mais confiável que o dado enviado)
+                    const idCliente = arquivo
+                        .replace('cliente_', '')
+                        .replace('.json', '');
+                    
                     // Extrair informações do cliente
                     const clienteInfo = {
-                        nome: ultimo.dados.cliente,
+                        id: idCliente,  // ← NOVO: ID único do arquivo
+                        nome: ultimo.dados.cliente || 'Cliente sem nome',
                         cidade: ultimo.dados.cidade || '',
                         obra: ultimo.dados.obra || '',
                         ultimaAtualizacao: ultimo.timestamp,
@@ -223,7 +229,7 @@ app.get('/api/dados', (req, res) => {
         res.status(500).json({ erro: error.message });
     }
 });
-
+      
 // Rota principal
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
