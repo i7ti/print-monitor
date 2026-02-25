@@ -558,11 +558,21 @@
                 atualizarHeader();
                 atualizarSidebar();
                 
-                // Se tinha um cliente selecionado, atualiza
+                // Se tinha um cliente selecionado, atualiza usando ID ÚNICO
                 if (clienteSelecionado) {
-                    const clienteAtual = clientes.find(c => c.nome === clienteSelecionado.nome);
+                    const clienteAtual = clientes.find(c => c.id_unico === clienteSelecionado.id_unico);
                     if (clienteAtual) {
                         mostrarDetalhesCliente(clienteAtual);
+                    } else {
+                        // Cliente foi excluído
+                        clienteSelecionado = null;
+                        document.getElementById('mainContent').innerHTML = `
+                            <div class="no-cliente">
+                                <i>🖨️</i>
+                                <h3>Selecione um cliente</h3>
+                                <p>Clique em um cliente na lista para ver os detalhes</p>
+                            </div>
+                        `;
                     }
                 }
             } catch (error) {
@@ -604,7 +614,8 @@
             }
             
             lista.innerHTML = clientesFiltrados.map(cliente => {
-                const selecionado = clienteSelecionado?.nome === cliente.nome ? 'selecionado' : '';
+                // Usar id_unico para seleção
+                const selecionado = clienteSelecionado?.id_unico === cliente.id_unico ? 'selecionado' : '';
                 const totalImp = cliente.impressoras?.length || 0;
                 const online = cliente.impressoras?.filter(i => i.status === 'online').length || 0;
                 const offline = totalImp - online;
@@ -613,10 +624,15 @@
                     totalPaginas += parseInt(imp.contadores?.total) || 0;
                 });
                 
+                // Nome para exibição (inclui id_obra se existir)
+                const nomeExibicao = cliente.id_obra ? 
+                    `${cliente.nome} (${cliente.id_obra})` : 
+                    cliente.nome;
+                
                 return `
-                    <div class="cliente-card ${selecionado}" onclick="selecionarCliente('${cliente.nome}')">
+                    <div class="cliente-card ${selecionado}" onclick="selecionarCliente('${cliente.id_unico}')">
                         <div class="cliente-nome">
-                            ${cliente.nome || 'Sem nome'}
+                            ${nomeExibicao}
                             <span class="cliente-badge">${totalImp}</span>
                         </div>
                         <div class="cliente-resumo">
@@ -643,8 +659,8 @@
             }).join('');
         }
 
-        function selecionarCliente(nomeCliente) {
-            clienteSelecionado = clientes.find(c => c.nome === nomeCliente);
+        function selecionarCliente(idUnico) {
+            clienteSelecionado = clientes.find(c => c.id_unico === idUnico);
             if (clienteSelecionado) {
                 mostrarDetalhesCliente(clienteSelecionado);
                 atualizarSidebar();
@@ -679,7 +695,7 @@
                         Cliente: <strong>${cliente.nome}</strong>
                         <span style="font-size: 14px; margin-left: 15px; color: #666;">
                             ${cliente.cidade ? `📍 ${cliente.cidade}` : ''} 
-                            ${cliente.obra ? `- Obra: ${cliente.obra}` : ''}
+                            ${cliente.id_obra ? `- Obra: ${cliente.id_obra}` : ''}
                         </span>
                     </div>
                     <div class="info-extra">
@@ -817,7 +833,7 @@
                 
                 btn.onmouseover = () => btn.style.background = '#218838';
                 btn.onmouseout = () => btn.style.background = '#28a745';
-                btn.onclick = () => forcarColetaCliente(cliente.id);
+                btn.onclick = () => forcarColetaCliente(cliente.id_unico); // ← USANDO id_unico!
                 
                 titulo.appendChild(btn);
             }, 100);
