@@ -502,6 +502,8 @@
         // =============================================
         function forcarColetaCliente(idCliente) {
             const btn = document.getElementById('btn-atualizar-cliente');
+            if (!btn) return;
+            
             const textoOriginal = btn.innerHTML;
             
             // Desabilitar botão e mostrar loading
@@ -551,6 +553,8 @@
             try {
                 const response = await fetch('/api/dados');
                 const dados = await response.json();
+                
+                console.log('Dados recebidos:', dados); // Para debug
                 
                 // Dados é um ARRAY de clientes
                 clientes = dados;
@@ -603,6 +607,11 @@
         function atualizarSidebar() {
             const lista = document.getElementById('clientesLista');
             const busca = document.getElementById('buscaCliente').value.toLowerCase();
+            
+            if (!clientes || clientes.length === 0) {
+                lista.innerHTML = '<div class="loading">Nenhum cliente encontrado</div>';
+                return;
+            }
             
             const clientesFiltrados = clientes.filter(c => 
                 c.nome?.toLowerCase().includes(busca)
@@ -674,7 +683,27 @@
         function mostrarDetalhesCliente(cliente) {
             const content = document.getElementById('mainContent');
             
+            // IMPORTANTE: As impressoras estão em cliente.impressoras
             const impressoras = cliente.impressoras || [];
+            
+            if (impressoras.length === 0) {
+                content.innerHTML = `
+                    <div class="content-header">
+                        <div class="cliente-titulo">
+                            Cliente: <strong>${cliente.nome}</strong>
+                            <span style="font-size: 14px; margin-left: 15px; color: #666;">
+                                ${cliente.cidade ? `📍 ${cliente.cidade}` : ''} 
+                                ${cliente.id_obra ? `- Obra: ${cliente.id_obra}` : ''}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="no-cliente" style="padding: 40px;">
+                        <p>Nenhuma impressora cadastrada para este cliente.</p>
+                    </div>
+                `;
+                return;
+            }
+            
             const totalPaginas = impressoras.reduce((acc, i) => acc + (parseInt(i.contadores?.total) || 0), 0);
             const online = impressoras.filter(i => i.status === 'online').length;
             const offline = impressoras.length - online;
@@ -833,7 +862,7 @@
                 
                 btn.onmouseover = () => btn.style.background = '#218838';
                 btn.onmouseout = () => btn.style.background = '#28a745';
-                btn.onclick = () => forcarColetaCliente(cliente.id_unico); // ← USANDO id_unico!
+                btn.onclick = () => forcarColetaCliente(cliente.id_unico);
                 
                 titulo.appendChild(btn);
             }, 100);
