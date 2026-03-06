@@ -29,6 +29,12 @@ app.post('/api/coletar', (req, res) => {
     try {
         const dados = req.body;
         console.log('📥 Dados recebidos:', dados.cliente);
+        console.log('📥 ID Único:', dados.id_unico);  // ← NOVO!
+        
+        // Validar se veio ID único
+        if (!dados.id_unico) {
+            console.warn('⚠️ Cliente sem ID único! Usando nome como fallback');
+        }
         
         // Criar pasta de dados se não existir
         const dadosDir = path.join(__dirname, 'dados');
@@ -36,8 +42,10 @@ app.post('/api/coletar', (req, res) => {
             fs.mkdirSync(dadosDir);
         }
         
-        // Salvar dados do cliente em arquivo JSON
-        const nomeArquivo = `cliente_${dados.cliente.replace(/[^a-zA-Z0-9]/g, '_')}.json`;
+        // PRIORIDADE 1: Usar ID único se existir
+        // PRIORIDADE 2: Fallback para nome do cliente
+        const identificador = dados.id_unico || dados.cliente || 'desconhecido';
+        const nomeArquivo = `cliente_${identificador.replace(/[^a-zA-Z0-9]/g, '_')}.json`;
         const caminhoArquivo = path.join(dadosDir, nomeArquivo);
         
         let historico = [];
@@ -226,19 +234,21 @@ app.get('/api/dados', (req, res) => {
                     // Pega o último dado de cada cliente
                     const ultimo = historico[historico.length - 1];
                     
-                    // Extrair ID do nome do arquivo (mais confiável que o dado enviado)
-                    const idCliente = arquivo
+                    // Extrair ID ÚNICO do nome do arquivo (NUNCA MUDA)
+                    const idUnico = arquivo
                         .replace('cliente_', '')
                         .replace('.json', '');
                     
-                    // Extrair informações do cliente
+                    // Extrair informações do cliente (podem mudar)
+                    const dadosRecebidos = ultimo.dados || {};
+                    
                     const clienteInfo = {
-                        id: idCliente,  // ← NOVO: ID único do arquivo
-                        nome: ultimo.dados.cliente || 'Cliente sem nome',
-                        cidade: ultimo.dados.cidade || '',
-                        obra: ultimo.dados.obra || '',
+                        id_unico: idUnico,                    // ← NUNCA MUDA (identificador real)
+                        id_obra: dadosRecebidos.id_obra || '', // ← PODE MUDAR
+                        nome: dadosRecebidos.cliente || 'Cliente sem nome', // ← PODE MUDAR
+                        cidade: dadosRecebidos.cidade || '',
                         ultimaAtualizacao: ultimo.timestamp,
-                        impressoras: ultimo.dados.dados || []
+                        impressoras: dadosRecebidos.dados || []
                     };
                     
                     // Calcular estatísticas
@@ -295,3 +305,4 @@ app.listen(PORT, () => {
     console.log(`📁 Pasta de dados: ${path.join(__dirname, 'dados')}`);
     console.log(`🔓 Rota pública /api/coletar disponível`);
 });
+
