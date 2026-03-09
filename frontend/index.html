@@ -437,34 +437,69 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .resumo-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* ===== NOVO CSS DO BOTÃO DE LOGOUT ===== */
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+    
     </style>
 </head>
 <body>
-    <header class="main-header">
-        <div class="header-content">
-            <div class="logo">
-                <h1>System <span>Print</span> Monitor</h1>
+
+  <header class="main-header">
+    <div class="header-content">
+        <div class="logo">
+            <img src="/logo.png" alt="System Print" style="height: 40px; margin-right: 10px;">
+            <h1>System <span>Print</span> Monitor</h1>
+        </div>
+        <div class="header-stats" id="headerStats">
+            <div class="header-stat-item">
+                <div class="header-stat-value" id="totalClientes">0</div>
+                <div class="header-stat-label">Clientes</div>
             </div>
-            <div class="header-stats" id="headerStats">
-                <div class="header-stat-item">
-                    <div class="header-stat-value" id="totalClientes">0</div>
-                    <div class="header-stat-label">Clientes</div>
-                </div>
-                <div class="header-stat-item">
-                    <div class="header-stat-value" id="totalImpressoras">0</div>
-                    <div class="header-stat-label">Impressoras</div>
-                </div>
-                <div class="header-stat-item">
-                    <div class="header-stat-value" id="totalOnline">0</div>
-                    <div class="header-stat-label">Online</div>
-                </div>
-                <div class="header-stat-item">
-                    <div class="header-stat-value" id="totalPaginas">0</div>
-                    <div class="header-stat-label">Páginas</div>
-                </div>
+            <div class="header-stat-item">
+                <div class="header-stat-value" id="totalImpressoras">0</div>
+                <div class="header-stat-label">Impressoras</div>
+            </div>
+            <div class="header-stat-item">
+                <div class="header-stat-value" id="totalOnline">0</div>
+                <div class="header-stat-label">Online</div>
+            </div>
+            <div class="header-stat-item">
+                <div class="header-stat-value" id="totalPaginas">0</div>
+                <div class="header-stat-label">Páginas</div>
             </div>
         </div>
-    </header>
+        <div>
+            <button onclick="fazerLogout()" class="btn-logout">🔓 Sair</button>
+        </div>
+    </div>
+</header>
     
     <div class="main-container">
         <!-- Sidebar de Clientes -->
@@ -880,6 +915,26 @@ html += `
                 titulo.appendChild(btn);
             }, 100);
         }
+
+// =============================================
+// FUNÇÃO DE LOGOUT
+// =============================================
+function fazerLogout() {
+    fetch('/api/logout', {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/login.html';
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao fazer logout:', error);
+        window.location.href = '/login.html';
+    });
+}
+
     </script>
 </body>
 </html>
