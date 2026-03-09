@@ -783,36 +783,49 @@
                 const cor = parseInt(imp.contadores?.cor) || 0;
                 const total = parseInt(imp.contadores?.total) || 0;
                 
-                // Toners
-                let toners = '';
-                if (imp.toners) {
-                    if (imp.toners.toner_preto) {
-                        toners += `<span class="toner-dot toner-preto" title="Preto ${imp.toners.toner_preto}%">P</span>`;
-                    }
-                    if (imp.toners.toner_ciano) {
-                        toners += `<span class="toner-dot toner-ciano" title="Ciano ${imp.toners.toner_ciano}%">C</span>`;
-                    }
-                    if (imp.toners.toner_magenta) {
-                        toners += `<span class="toner-dot toner-magenta" title="Magenta ${imp.toners.toner_magenta}%">M</span>`;
-                    }
-                    if (imp.toners.toner_amarelo) {
-                        toners += `<span class="toner-dot toner-amarelo" title="Amarelo ${imp.toners.toner_amarelo}%">Y</span>`;
-                    }
-                }
-                
-                html += `
-                    <tr>
-                        <td><span class="status-chip ${statusClass}">${statusText}</span></td>
-                        <td><strong>${imp.nome || 'N/A'}</strong></td>
-                        <td>${imp.modelo || 'N/A'}</td>
-                        <td><span class="setor-badge">${imp.setor || 'N/A'}</span></td>
-                        <td>${imp.ip || 'N/A'}</td>
-                        <td class="valor-contador">${pb.toLocaleString('pt-BR')}</td>
-                        <td class="valor-contador">${cor.toLocaleString('pt-BR')}</td>
-                        <td class="valor-contador">${total.toLocaleString('pt-BR')}</td>
-                        <td><div class="toner-indicators">${toners || 'N/A'}</div></td>
-                    </tr>
-                `;
+    // Toners
+            let toners = '';
+            if (imp.toners) {
+    // Verificar se o objeto toners não está vazio
+    const temToners = Object.keys(imp.toners).length > 0;
+    
+    if (temToners) {
+        if (imp.toners.toner_preto) {
+            const nivel = imp.toners.toner_preto;
+            toners += `<span class="toner-dot toner-preto" title="Preto ${nivel}%">P</span>`;
+        }
+        if (imp.toners.toner_ciano) {
+            const nivel = imp.toners.toner_ciano;
+            toners += `<span class="toner-dot toner-ciano" title="Ciano ${nivel}%">C</span>`;
+        }
+        if (imp.toners.toner_magenta) {
+            const nivel = imp.toners.toner_magenta;
+            toners += `<span class="toner-dot toner-magenta" title="Magenta ${nivel}%">M</span>`;
+        }
+        if (imp.toners.toner_amarelo) {
+            const nivel = imp.toners.toner_amarelo;
+            toners += `<span class="toner-dot toner-amarelo" title="Amarelo ${nivel}%">Y</span>`;
+        }
+    } else {
+        toners = '-';  // Objeto vazio, mostra traço
+    }
+} else {
+    toners = '-';  // Sem objeto toners, mostra traço
+}
+
+html += `
+    <tr>
+        <td><span class="status-chip ${statusClass}">${statusText}</span></td>
+        <td><strong>${imp.nome || imp.modelo || 'N/A'}</strong></td>
+        <td>${imp.modelo || 'N/A'}</td>
+        <td><span class="setor-badge">${imp.setor || 'N/A'}</span></td>
+        <td>${imp.ip || 'N/A'}</td>
+        <td class="valor-contador">${pb.toLocaleString('pt-BR')}</td>
+        <td class="valor-contador">${cor.toLocaleString('pt-BR')}</td>
+        <td class="valor-contador">${total.toLocaleString('pt-BR')}</td>
+        <td><div class="toner-indicators">${toners}</div></td>
+    </tr>
+`;
             });
             
             html += `
