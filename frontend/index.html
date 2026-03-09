@@ -584,40 +584,56 @@
         setInterval(carregarDados, 10000);
         carregarDados();
 
-        async function carregarDados() {
-            try {
-                const response = await fetch('/api/dados');
-                const dados = await response.json();
-                
-                console.log('Dados recebidos:', dados); // Para debug
-                
-                // Dados é um ARRAY de clientes
-                clientes = dados;
-                
-                atualizarHeader();
-                atualizarSidebar();
-                
-                // Se tinha um cliente selecionado, atualiza usando ID ÚNICO
-                if (clienteSelecionado) {
-                    const clienteAtual = clientes.find(c => c.id_unico === clienteSelecionado.id_unico);
-                    if (clienteAtual) {
-                        mostrarDetalhesCliente(clienteAtual);
-                    } else {
-                        // Cliente foi excluído
-                        clienteSelecionado = null;
-                        document.getElementById('mainContent').innerHTML = `
-                            <div class="no-cliente">
-                                <i>🖨️</i>
-                                <h3>Selecione um cliente</h3>
-                                <p>Clique em um cliente na lista para ver os detalhes</p>
-                            </div>
-                        `;
-                    }
-                }
-            } catch (error) {
-                console.error('Erro ao carregar dados:', error);
+     async function carregarDados() {
+    try {
+        const response = await fetch('/api/dados');
+        
+        // Se não autorizado (401), redireciona para login
+        if (response.status === 401) {
+            console.log('⏰ Sessão expirada, redirecionando...');
+            window.location.href = '/login.html';
+            return;
+        }
+        
+        const dados = await response.json();
+        console.log('Dados recebidos:', dados);
+        
+        // GARANTIR que clientes seja sempre um array
+        if (Array.isArray(dados)) {
+            clientes = dados;
+        } else if (dados && typeof dados === 'object') {
+            // Se for um objeto (único cliente), converte para array
+            console.log('⚠️ Dados recebidos como objeto, convertendo para array');
+            clientes = [dados];
+        } else {
+            console.log('⚠️ Dados inválidos, usando array vazio');
+            clientes = [];
+        }
+        
+        atualizarHeader();
+        atualizarSidebar();
+        
+        // Se tinha um cliente selecionado, atualiza usando ID ÚNICO
+        if (clienteSelecionado) {
+            const clienteAtual = clientes.find(c => c.id_unico === clienteSelecionado.id_unico);
+            if (clienteAtual) {
+                mostrarDetalhesCliente(clienteAtual);
+            } else {
+                clienteSelecionado = null;
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="no-cliente">
+                        <i>🖨️</i>
+                        <h3>Selecione um cliente</h3>
+                        <p>Clique em um cliente na lista para ver os detalhes</p>
+                    </div>
+                `;
             }
         }
+    } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+        clientes = [];
+    }
+}
 
         function atualizarHeader() {
             const totalClientes = clientes.length;
