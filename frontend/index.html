@@ -473,10 +473,15 @@
 
   <header class="main-header">
     <div class="header-content">
-        <div class="logo">
-            <img src="/logo.png" alt="System Print" style="height: 80px; margin-right: 25px;">
+        <div class="logo" style="display: flex; align-items: center;">
+            <img src="/logo.png" 
+                 alt="System Print" 
+                 style="height: 45px;        /* Altura fixa */
+                        width: auto; 
+                        margin-right: 15px;">
             <h1>System <span>Print</span> Monitor</h1>
         </div>
+        <!-- resto do header -->
         <div class="header-stats" id="headerStats">
             <div class="header-stat-item">
                 <div class="header-stat-value" id="totalClientes">0</div>
