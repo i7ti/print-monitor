@@ -122,7 +122,8 @@
     </style>
 </head>
 <body>
-      <div class="login-container">
+ <div class="login-container">
+    <!-- SVG atual (funciona) -->
     <div class="logo" style="text-align: center; margin-bottom: 20px;">
         <svg width="280" height="100" viewBox="0 0 280 100" style="max-width: 100%; height: auto;">
             <!-- Fundo gradiente -->
@@ -142,6 +143,15 @@
             <line x1="20" y1="80" x2="260" y2="80" stroke="#ffd700" stroke-width="2" stroke-dasharray="5,5"/>
         </svg>
     </div>
+    
+    <!-- NOVO LOGO PARA TESTE (abaixo do SVG) -->
+    <div style="text-align: center; margin: 20px 0; padding: 10px; border: 2px solid red;">
+        <h3>Teste de imagem:</h3>
+        <img src="/logo.png" alt="Logo original" style="max-width: 280px; max-height: 100px; border: 2px solid blue;">
+        <p>Se esta imagem aparecer com borda azul, o PNG está funcionando.</p>
+    </div>
+    
+    <!-- Resto do formulário de login -->
     
     <!-- resto do seu código (formulário de login, etc) -->
         <div class="error-message" id="erro"></div>
