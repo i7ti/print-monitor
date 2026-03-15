@@ -1,0 +1,5 @@
+<svg width="280" height="100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="280" height="100" fill="#1e3c72" rx="10"/>
+  <text x="30" y="65" font-family="Arial" font-size="36" fill="white">System</text>
+  <text x="160" y="65" font-family="Arial" font-size="36" fill="#ffd700" font-weight="bold">Print</text>
+</svg>
