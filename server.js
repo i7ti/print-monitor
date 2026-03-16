@@ -183,13 +183,15 @@ app.get('/api/verificar-solicitacao/:idCliente', (req, res) => {
 // =============================================
 app.use((req, res, next) => {
     // Rotas que NÃO precisam de login
-    const rotasPublicas = [
-        '/api/coletar',
-        '/api/login', 
-        '/api/logout',
-        '/login.html',
-        '/favicon.ico'
-    ];
+// Rotas que NÃO precisam de login
+const rotasPublicas = [
+    '/api/coletar',
+    '/api/login', 
+    '/api/logout',
+    '/login.html',
+    '/favicon.ico',
+    '/logo.png'  // ← ADICIONE ESTA LINHA!
+];
     
     if (rotasPublicas.includes(req.path)) {
         return next();
