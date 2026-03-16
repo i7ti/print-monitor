@@ -122,16 +122,18 @@
     </style>
 </head>
 <body>
- <div class="login-container">
+  <div class="login-container">
     <div class="logo" style="text-align: center; margin-bottom: 20px;">
-        <img src="/logo.png" 
+        <img src="/logo.png?t=<%= new Date().getTime() %>" 
              alt="System Print" 
              style="width: 277px; 
                     height: 100px; 
                     display: block;
-                    margin: 0 auto;">
-    </div>
-        
+                    margin: 0 auto;
+                    border: 1px solid transparent;"
+             onload="this.style.border='none'"
+             onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22277%22%20height%3D%22100%22%20viewBox%3D%220%200%20277%20100%22%3E%3Crect%20width%3D%22277%22%20height%3D%22100%22%20fill%3D%22%231e3c72%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2265%22%20font-family%3D%22Arial%22%20font-size%3D%2236%22%20fill%3D%22%23ffffff%22%3ESystem%3C%2Ftext%3E%3Ctext%20x%3D%22150%22%20y%3D%2265%22%20font-family%3D%22Arial%22%20font-size%3D%2236%22%20fill%3D%22%23ffd700%22%20font-weight%3D%22bold%22%3EPrint%3C%2Ftext%3E%3C%2Fsvg%3E';">
+    </div>      
     <!-- resto do seu código (formulário de login, etc) -->
         <div class="error-message" id="erro"></div>
         
