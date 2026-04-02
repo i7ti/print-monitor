@@ -586,7 +586,7 @@
         }
 
         // Atualizar a cada 10 segundos
-        setInterval(carregarDados, 10000);
+        setInterval(carregarDados, 300000);
         carregarDados();
 
      async function carregarDados() {
@@ -894,6 +894,38 @@ html += `
             `;
             
             content.innerHTML = html;
+                                
+            // =============================================
+            // BUSCAR INFORMAÇÕES DO SISTEMA DO CLIENTE
+            // =============================================
+            if (cliente.id_unico) {
+                fetch(`/api/cliente-info/${cliente.id_unico}`)
+                    .then(response => response.json())
+                    .then(info => {
+                        // Remover div antiga se existir
+                        const divAntiga = document.getElementById('info-sistema-cliente');
+                        if (divAntiga) divAntiga.remove();
+                        
+                        // Criar nova div com as informações
+                        const infoDiv = document.createElement('div');
+                        infoDiv.id = 'info-sistema-cliente';
+                        infoDiv.style.cssText = 'background: #e9ecef; border-radius: 8px; padding: 8px 15px; margin: 10px 20px; font-size: 12px; display: flex; gap: 20px; flex-wrap: wrap;';
+                        infoDiv.innerHTML = `
+                            <span>🖥️ <strong>Computador:</strong> ${info.hostname || 'N/A'}</span>
+                            <span>🌐 <strong>IP:</strong> ${info.ip_local || 'N/A'}</span>
+                            <span>💻 <strong>Sistema:</strong> ${info.sistema || 'N/A'}</span>
+                            <span>📅 <strong>Última atualização:</strong> ${info.ultima_atualizacao ? new Date(info.ultima_atualizacao).toLocaleString() : 'N/A'}</span>
+                        `;
+                        
+                        // Inserir após o content-header
+                        const contentHeader = document.querySelector('.content-header');
+                        if (contentHeader) {
+                            contentHeader.insertAdjacentElement('afterend', infoDiv);
+                        }
+                    })
+                    .catch(error => console.error('Erro ao carregar info do cliente:', error));
+            }
+        }
             
             // =============================================
             // ADICIONAR BOTÃO DE ATUALIZAÇÃO
