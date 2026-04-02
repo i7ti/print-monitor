@@ -179,21 +179,51 @@ app.get('/api/verificar-solicitacao/:idCliente', (req, res) => {
 });
 
 // =============================================
+// ROTA PARA INFORMAÇÕES DO CLIENTE (HOSTNAME/IP)
+// =============================================
+app.get('/api/cliente-info/:idUnico', (req, res) => {
+    try {
+        const { idUnico } = req.params;
+        const arquivoCliente = path.join(__dirname, 'dados', `cliente_${idUnico}.json`);
+        
+        if (fs.existsSync(arquivoCliente)) {
+            const historico = JSON.parse(fs.readFileSync(arquivoCliente, 'utf8'));
+            if (historico.length > 0) {
+                const ultimo = historico[historico.length - 1];
+                const infoCliente = ultimo.dados?.info_sistema || null;
+                return res.json({ 
+                    hostname: infoCliente?.hostname || 'N/A',
+                    ip_local: infoCliente?.ip_local || 'N/A',
+                    sistema: infoCliente?.sistema || 'N/A',
+                    ultima_atualizacao: ultimo.timestamp
+                });
+            }
+        }
+        res.json({ hostname: 'N/A', ip_local: 'N/A', sistema: 'N/A' });
+    } catch (error) {
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+// =============================================
 // 2. MIDDLEWARE DE AUTENTICAÇÃO
 // =============================================
 app.use((req, res, next) => {
     // Rotas que NÃO precisam de login
-// Rotas que NÃO precisam de login
-const rotasPublicas = [
-    '/api/coletar',
-    '/api/login', 
-    '/api/logout',
-    '/login.html',
-    '/favicon.ico',
-    '/logo.png'  // ← ADICIONE ESTA LINHA!
-];
+    const rotasPublicas = [
+        '/api/coletar',
+        '/api/login', 
+        '/api/logout',
+        '/login.html',
+        '/favicon.ico',
+        '/logo.png',
+        '/api/forcar-coleta',
+        '/api/verificar-solicitacao',
+        '/api/cliente-info'  // ← NOVA ROTA ADICIONADA
+    ];
     
-    if (rotasPublicas.includes(req.path)) {
+    // Verificar se a rota começa com alguma das públicas
+    if (rotasPublicas.some(rota => req.path.startsWith(rota))) {
         return next();
     }
     
