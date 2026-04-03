@@ -1,6 +1,7 @@
 <!-- frontend/index.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,18 +14,18 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
             background: #f0f2f5;
         }
-        
+
         .main-header {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             padding: 8px 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        
+
         .header-content {
             display: flex;
             justify-content: space-between;
@@ -32,40 +33,40 @@
             max-width: 1600px;
             margin: 0 auto;
         }
-        
+
         .logo h1 {
             font-size: 24px;
             font-weight: 300;
         }
-        
+
         .logo span {
             font-weight: 700;
             color: #ffd700;
         }
-        
+
         .header-stats {
             display: flex;
             gap: 15px;
         }
-        
+
         .header-stat-item {
             text-align: center;
         }
-        
+
         .header-stat-value {
             font-size: 20px;
             font-weight: 700;
         }
-        
+
         .header-stat-label {
             font-size: 10px;
             opacity: 0.8;
         }
-        
+
         .config-btn {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
@@ -73,11 +74,11 @@
             transition: all 0.3s;
             text-decoration: none;
         }
-        
+
         .config-btn:hover {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.3);
         }
-        
+
         .main-container {
             max-width: 1600px;
             margin: 20px auto;
@@ -86,21 +87,21 @@
             grid-template-columns: 350px 1fr;
             gap: 20px;
         }
-        
+
         .clientes-sidebar {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             height: fit-content;
         }
-        
+
         .sidebar-header {
             background: #f8f9fa;
             padding: 15px;
             border-bottom: 2px solid #e9ecef;
         }
-        
+
         .sidebar-header h2 {
             font-size: 18px;
             color: #495057;
@@ -108,16 +109,16 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .sidebar-header h2 i {
             color: #2a5298;
         }
-        
+
         .busca-cliente {
             padding: 15px;
             border-bottom: 1px solid #e9ecef;
         }
-        
+
         .busca-cliente input {
             width: 100%;
             padding: 10px 15px;
@@ -126,18 +127,18 @@
             font-size: 14px;
             transition: all 0.3s;
         }
-        
+
         .busca-cliente input:focus {
             outline: none;
             border-color: #2a5298;
         }
-        
+
         .clientes-lista {
             max-height: calc(100vh - 300px);
             overflow-y: auto;
             padding: 10px;
         }
-        
+
         .cliente-card {
             background: white;
             border: 2px solid #e9ecef;
@@ -147,18 +148,18 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        
+
         .cliente-card:hover {
             border-color: #2a5298;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(42,82,152,0.15);
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.15);
         }
-        
+
         .cliente-card.selecionado {
             border-color: #2a5298;
             background: #f0f7ff;
         }
-        
+
         .cliente-nome {
             font-size: 16px;
             font-weight: 700;
@@ -168,7 +169,7 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .cliente-badge {
             background: #2a5298;
             color: white;
@@ -176,33 +177,33 @@
             border-radius: 20px;
             font-size: 11px;
         }
-        
+
         .cliente-resumo {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 10px;
         }
-        
+
         .resumo-item {
             text-align: center;
             padding: 8px;
             border-radius: 8px;
             background: #f8f9fa;
         }
-        
+
         .resumo-valor {
             font-size: 16px;
             font-weight: 700;
             color: #1e3c72;
         }
-        
+
         .resumo-label {
             font-size: 10px;
             color: #6c757d;
             text-transform: uppercase;
         }
-        
+
         .cliente-status {
             display: flex;
             justify-content: space-between;
@@ -212,20 +213,20 @@
             padding-top: 8px;
             margin-top: 8px;
         }
-        
+
         .main-content {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
-        
+
         .content-header {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             padding: 20px;
             border-bottom: 2px solid #dee2e6;
         }
-        
+
         .cliente-titulo {
             font-size: 24px;
             font-weight: 300;
@@ -234,12 +235,12 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        
+
         .cliente-titulo strong {
             font-weight: 700;
             color: #2a5298;
         }
-        
+
         .info-extra {
             display: flex;
             gap: 20px;
@@ -248,14 +249,14 @@
             color: #6c757d;
             flex-wrap: wrap;
         }
-        
+
         .resumo-cards {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             padding: 20px;
         }
-        
+
         .resumo-card {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border-radius: 12px;
@@ -263,44 +264,44 @@
             text-align: center;
             transition: all 0.3s;
         }
-        
+
         .resumo-card.total {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
         }
-        
+
         .resumo-card.pb {
             background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
             color: white;
         }
-        
+
         .resumo-card.color {
             background: linear-gradient(135deg, #c44536 0%, #e67e22 100%);
             color: white;
         }
-        
+
         .resumo-card.impressoras {
             background: linear-gradient(135deg, #0b845c 0%, #2ecc71 100%);
             color: white;
         }
-        
+
         .card-valor {
             font-size: 32px;
             font-weight: 700;
             margin: 10px 0;
         }
-        
+
         .card-label {
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
             opacity: 0.9;
         }
-        
+
         .impressoras-section {
             padding: 0 20px 20px 20px;
         }
-        
+
         .section-title {
             font-size: 18px;
             color: #495057;
@@ -308,12 +309,12 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #e9ecef;
         }
-        
+
         .tabela-impressoras {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         .tabela-impressoras th {
             text-align: left;
             padding: 12px 10px;
@@ -324,17 +325,17 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .tabela-impressoras td {
             padding: 15px 10px;
             border-bottom: 1px solid #e9ecef;
             font-size: 14px;
         }
-        
+
         .tabela-impressoras tr:hover {
             background: #f8f9fa;
         }
-        
+
         .status-chip {
             display: inline-block;
             padding: 4px 8px;
@@ -342,23 +343,23 @@
             font-size: 11px;
             font-weight: 600;
         }
-        
+
         .status-online {
             background: #d4edda;
             color: #155724;
         }
-        
+
         .status-offline {
             background: #f8d7da;
             color: #721c24;
         }
-        
+
         .toner-indicators {
             display: flex;
             gap: 5px;
             flex-wrap: wrap;
         }
-        
+
         .toner-dot {
             width: 25px;
             height: 25px;
@@ -369,17 +370,32 @@
             font-size: 11px;
             font-weight: bold;
         }
-        
-        .toner-preto { background: #2c3e50; color: white; }
-        .toner-ciano { background: #3498db; color: white; }
-        .toner-magenta { background: #e83e8c; color: white; }
-        .toner-amarelo { background: #f1c40f; color: black; }
-        
+
+        .toner-preto {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .toner-ciano {
+            background: #3498db;
+            color: white;
+        }
+
+        .toner-magenta {
+            background: #e83e8c;
+            color: white;
+        }
+
+        .toner-amarelo {
+            background: #f1c40f;
+            color: black;
+        }
+
         .valor-contador {
             font-weight: 700;
             color: #1e3c72;
         }
-        
+
         .setor-badge {
             background: #e9ecef;
             padding: 3px 6px;
@@ -387,52 +403,53 @@
             font-size: 11px;
             color: #495057;
         }
-        
+
         .loading {
             text-align: center;
             padding: 50px;
             color: #6c757d;
         }
-        
+
         .no-cliente {
             text-align: center;
             padding: 50px;
             color: #6c757d;
         }
-        
+
         .no-cliente i {
             font-size: 48px;
             margin-bottom: 20px;
             opacity: 0.3;
         }
-        
+
         .mensagem-sem-resultado {
             padding: 20px;
             text-align: center;
             color: #6c757d;
         }
-        
+
         ::-webkit-scrollbar {
             width: 8px;
         }
-        
+
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
-        
+
         ::-webkit-scrollbar-thumb {
             background: #2a5298;
             border-radius: 4px;
         }
-        
+
         ::-webkit-scrollbar-thumb:hover {
             background: #1e3c72;
         }
-        
+
         @media (max-width: 1200px) {
             .main-container {
                 grid-template-columns: 1fr;
             }
+
             .resumo-cards {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -442,11 +459,12 @@
             .main-container {
                 grid-template-columns: 1fr;
             }
+
             .resumo-cards {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-        
+
         /* ===== NOVO CSS DO BOTÃO DE LOGOUT ===== */
         .btn-logout {
             background: #dc3545;
@@ -464,48 +482,46 @@
         .btn-logout:hover {
             background: #c82333;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-    
     </style>
 </head>
+
 <body>
 
-  <header class="main-header">
-    <div class="header-content">
-    <div class="logo" style="display: flex; align-items: center;">
-    <img src="/logo.png" 
-         alt="System Print" 
-         style="height: 45px; 
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo" style="display: flex; align-items: center;">
+                <img src="/logo.png" alt="System Print" style="height: 45px; 
                 width: auto; 
                 margin-right: 15px;">
-    <h1>System <span>Print</span> Monitor</h1>
-</div>
-        <!-- resto do header -->
-        <div class="header-stats" id="headerStats">
-            <div class="header-stat-item">
-                <div class="header-stat-value" id="totalClientes">0</div>
-                <div class="header-stat-label">Clientes</div>
+                <h1>System <span>Print</span> Monitor</h1>
             </div>
-            <div class="header-stat-item">
-                <div class="header-stat-value" id="totalImpressoras">0</div>
-                <div class="header-stat-label">Impressoras</div>
+            <!-- resto do header -->
+            <div class="header-stats" id="headerStats">
+                <div class="header-stat-item">
+                    <div class="header-stat-value" id="totalClientes">0</div>
+                    <div class="header-stat-label">Clientes</div>
+                </div>
+                <div class="header-stat-item">
+                    <div class="header-stat-value" id="totalImpressoras">0</div>
+                    <div class="header-stat-label">Impressoras</div>
+                </div>
+                <div class="header-stat-item">
+                    <div class="header-stat-value" id="totalOnline">0</div>
+                    <div class="header-stat-label">Online</div>
+                </div>
+                <div class="header-stat-item">
+                    <div class="header-stat-value" id="totalPaginas">0</div>
+                    <div class="header-stat-label">Páginas</div>
+                </div>
             </div>
-            <div class="header-stat-item">
-                <div class="header-stat-value" id="totalOnline">0</div>
-                <div class="header-stat-label">Online</div>
-            </div>
-            <div class="header-stat-item">
-                <div class="header-stat-value" id="totalPaginas">0</div>
-                <div class="header-stat-label">Páginas</div>
+            <div>
+                <button onclick="fazerLogout()" class="btn-logout">🔓 Sair</button>
             </div>
         </div>
-        <div>
-            <button onclick="fazerLogout()" class="btn-logout">🔓 Sair</button>
-        </div>
-    </div>
-</header>
-    
+    </header>
+
     <div class="main-container">
         <!-- Sidebar de Clientes -->
         <aside class="clientes-sidebar">
@@ -519,7 +535,7 @@
                 <div class="loading">Carregando...</div>
             </div>
         </aside>
-        
+
         <main class="main-content" id="mainContent">
             <div class="no-cliente">
                 <i>🖨️</i>
@@ -533,7 +549,7 @@
         // =============================================
         // CÓDIGO CORRIGIDO PARA A ESTRUTURA DO SERVIDOR
         // =============================================
-        
+
         let clientes = [];
         let clienteSelecionado = null;
 
@@ -543,15 +559,15 @@
         function forcarColetaCliente(idCliente) {
             const btn = document.getElementById('btn-atualizar-cliente');
             if (!btn) return;
-            
+
             const textoOriginal = btn.innerHTML;
-            
+
             // Desabilitar botão e mostrar loading
             btn.innerHTML = '⏳ Solicitando...';
             btn.disabled = true;
             btn.style.background = '#6c757d';
             btn.style.cursor = 'not-allowed';
-            
+
             // Fazer requisição para o servidor
             fetch(`/api/forcar-coleta/${encodeURIComponent(idCliente)}`, {
                 method: 'POST',
@@ -559,93 +575,93 @@
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'ok') {
-                    btn.innerHTML = '✅ Solicitado!';
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        btn.innerHTML = '✅ Solicitado!';
+                        setTimeout(() => {
+                            btn.innerHTML = textoOriginal;
+                            btn.disabled = false;
+                            btn.style.background = '#28a745';
+                            btn.style.cursor = 'pointer';
+                        }, 2000);
+                    } else {
+                        throw new Error(data.erro || 'Erro desconhecido');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    btn.innerHTML = '❌ Erro';
                     setTimeout(() => {
                         btn.innerHTML = textoOriginal;
                         btn.disabled = false;
                         btn.style.background = '#28a745';
                         btn.style.cursor = 'pointer';
                     }, 2000);
-                } else {
-                    throw new Error(data.erro || 'Erro desconhecido');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                btn.innerHTML = '❌ Erro';
-                setTimeout(() => {
-                    btn.innerHTML = textoOriginal;
-                    btn.disabled = false;
-                    btn.style.background = '#28a745';
-                    btn.style.cursor = 'pointer';
-                }, 2000);
-            });
+                });
         }
 
         // Atualizar a cada 10 segundos
         setInterval(carregarDados, 300000);
         carregarDados();
 
-     async function carregarDados() {
-    try {
-        const response = await fetch('/api/dados');
-        
-        // Se não autorizado (401), redireciona para login
-        if (response.status === 401) {
-            console.log('⏰ Sessão expirada, redirecionando...');
-            window.location.href = '/login.html';
-            return;
-        }
-        
-        const dados = await response.json();
-        console.log('Dados recebidos:', dados);
-        
-        // GARANTIR que clientes seja sempre um array
-        if (Array.isArray(dados)) {
-            clientes = dados;
-        } else if (dados && typeof dados === 'object') {
-            // Se for um objeto (único cliente), converte para array
-            console.log('⚠️ Dados recebidos como objeto, convertendo para array');
-            clientes = [dados];
-        } else {
-            console.log('⚠️ Dados inválidos, usando array vazio');
-            clientes = [];
-        }
-        
-        atualizarHeader();
-        atualizarSidebar();
-        
-        // Se tinha um cliente selecionado, atualiza usando ID ÚNICO
-        if (clienteSelecionado) {
-            const clienteAtual = clientes.find(c => c.id_unico === clienteSelecionado.id_unico);
-            if (clienteAtual) {
-                mostrarDetalhesCliente(clienteAtual);
-            } else {
-                clienteSelecionado = null;
-                document.getElementById('mainContent').innerHTML = `
+        async function carregarDados() {
+            try {
+                const response = await fetch('/api/dados');
+
+                // Se não autorizado (401), redireciona para login
+                if (response.status === 401) {
+                    console.log('⏰ Sessão expirada, redirecionando...');
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                const dados = await response.json();
+                console.log('Dados recebidos:', dados);
+
+                // GARANTIR que clientes seja sempre um array
+                if (Array.isArray(dados)) {
+                    clientes = dados;
+                } else if (dados && typeof dados === 'object') {
+                    // Se for um objeto (único cliente), converte para array
+                    console.log('⚠️ Dados recebidos como objeto, convertendo para array');
+                    clientes = [dados];
+                } else {
+                    console.log('⚠️ Dados inválidos, usando array vazio');
+                    clientes = [];
+                }
+
+                atualizarHeader();
+                atualizarSidebar();
+
+                // Se tinha um cliente selecionado, atualiza usando ID ÚNICO
+                if (clienteSelecionado) {
+                    const clienteAtual = clientes.find(c => c.id_unico === clienteSelecionado.id_unico);
+                    if (clienteAtual) {
+                        mostrarDetalhesCliente(clienteAtual);
+                    } else {
+                        clienteSelecionado = null;
+                        document.getElementById('mainContent').innerHTML = `
                     <div class="no-cliente">
                         <i>🖨️</i>
                         <h3>Selecione um cliente</h3>
                         <p>Clique em um cliente na lista para ver os detalhes</p>
                     </div>
                 `;
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                clientes = [];
             }
         }
-    } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        clientes = [];
-    }
-}
 
         function atualizarHeader() {
             const totalClientes = clientes.length;
             let totalImpressoras = 0;
             let totalOnline = 0;
             let totalPaginas = 0;
-            
+
             clientes.forEach(cliente => {
                 totalImpressoras += cliente.impressoras?.length || 0;
                 totalOnline += cliente.impressoras?.filter(i => i.status === 'online').length || 0;
@@ -653,7 +669,7 @@
                     totalPaginas += parseInt(imp.contadores?.total) || 0;
                 });
             });
-            
+
             document.getElementById('totalClientes').textContent = totalClientes;
             document.getElementById('totalImpressoras').textContent = totalImpressoras;
             document.getElementById('totalOnline').textContent = totalOnline;
@@ -663,21 +679,21 @@
         function atualizarSidebar() {
             const lista = document.getElementById('clientesLista');
             const busca = document.getElementById('buscaCliente').value.toLowerCase();
-            
+
             if (!clientes || clientes.length === 0) {
                 lista.innerHTML = '<div class="loading">Nenhum cliente encontrado</div>';
                 return;
             }
-            
-            const clientesFiltrados = clientes.filter(c => 
+
+            const clientesFiltrados = clientes.filter(c =>
                 c.nome?.toLowerCase().includes(busca)
             );
-            
+
             if (clientesFiltrados.length === 0) {
                 lista.innerHTML = '<div class="mensagem-sem-resultado">Nenhum cliente encontrado</div>';
                 return;
             }
-            
+
             lista.innerHTML = clientesFiltrados.map(cliente => {
                 // Usar id_unico para seleção
                 const selecionado = clienteSelecionado?.id_unico === cliente.id_unico ? 'selecionado' : '';
@@ -688,12 +704,12 @@
                 cliente.impressoras?.forEach(imp => {
                     totalPaginas += parseInt(imp.contadores?.total) || 0;
                 });
-                
+
                 // Nome para exibição (inclui id_obra se existir)
-                const nomeExibicao = cliente.id_obra ? 
-                    `${cliente.nome} (${cliente.id_obra})` : 
+                const nomeExibicao = cliente.id_obra ?
+                    `${cliente.nome} (${cliente.id_obra})` :
                     cliente.nome;
-                
+
                 return `
                     <div class="cliente-card ${selecionado}" onclick="selecionarCliente('${cliente.id_unico}')">
                         <div class="cliente-nome">
@@ -736,12 +752,12 @@
             atualizarSidebar();
         }
 
-        function mostrarDetalhesCliente(cliente) {
+               function mostrarDetalhesCliente(cliente) {
             const content = document.getElementById('mainContent');
-            
+
             // IMPORTANTE: As impressoras estão em cliente.impressoras
             const impressoras = cliente.impressoras || [];
-            
+
             if (impressoras.length === 0) {
                 content.innerHTML = `
                     <div class="content-header">
@@ -759,11 +775,11 @@
                 `;
                 return;
             }
-            
+
             const totalPaginas = impressoras.reduce((acc, i) => acc + (parseInt(i.contadores?.total) || 0), 0);
             const online = impressoras.filter(i => i.status === 'online').length;
             const offline = impressoras.length - online;
-            
+
             // Calcular PB e Cor
             let totalPB = 0;
             let totalCor = 0;
@@ -773,7 +789,7 @@
                     totalCor += parseInt(imp.contadores?.cor) || 0;
                 }
             });
-            
+
             let html = `
                 <div class="content-header">
                     <div class="cliente-titulo">
@@ -830,46 +846,40 @@
                         </thead>
                         <tbody>
             `;
-            
+
             impressoras.forEach(imp => {
                 const statusClass = imp.status === 'online' ? 'status-online' : 'status-offline';
                 const statusText = imp.status === 'online' ? '● Online' : '○ Offline';
-                
+
                 const pb = parseInt(imp.contadores?.preto) || 0;
                 const cor = parseInt(imp.contadores?.cor) || 0;
                 const total = parseInt(imp.contadores?.total) || 0;
-                
-    // Toners
-            let toners = '';
-            if (imp.toners) {
-    // Verificar se o objeto toners não está vazio
-    const temToners = Object.keys(imp.toners).length > 0;
-    
-    if (temToners) {
-        if (imp.toners.toner_preto) {
-            const nivel = imp.toners.toner_preto;
-            toners += `<span class="toner-dot toner-preto" title="Preto ${nivel}%">P</span>`;
-        }
-        if (imp.toners.toner_ciano) {
-            const nivel = imp.toners.toner_ciano;
-            toners += `<span class="toner-dot toner-ciano" title="Ciano ${nivel}%">C</span>`;
-        }
-        if (imp.toners.toner_magenta) {
-            const nivel = imp.toners.toner_magenta;
-            toners += `<span class="toner-dot toner-magenta" title="Magenta ${nivel}%">M</span>`;
-        }
-        if (imp.toners.toner_amarelo) {
-            const nivel = imp.toners.toner_amarelo;
-            toners += `<span class="toner-dot toner-amarelo" title="Amarelo ${nivel}%">Y</span>`;
-        }
-    } else {
-        toners = '-';  // Objeto vazio, mostra traço
-    }
-} else {
-    toners = '-';  // Sem objeto toners, mostra traço
-}
 
-html += `
+                // Toners
+                let toners = '';
+                if (imp.toners) {
+                    const temToners = Object.keys(imp.toners).length > 0;
+                    if (temToners) {
+                        if (imp.toners.toner_preto) {
+                            toners += `<span class="toner-dot toner-preto" title="Preto ${imp.toners.toner_preto}%">P</span>`;
+                        }
+                        if (imp.toners.toner_ciano) {
+                            toners += `<span class="toner-dot toner-ciano" title="Ciano ${imp.toners.toner_ciano}%">C</span>`;
+                        }
+                        if (imp.toners.toner_magenta) {
+                            toners += `<span class="toner-dot toner-magenta" title="Magenta ${imp.toners.toner_magenta}%">M</span>`;
+                        }
+                        if (imp.toners.toner_amarelo) {
+                            toners += `<span class="toner-dot toner-amarelo" title="Amarelo ${imp.toners.toner_amarelo}%">Y</span>`;
+                        }
+                    } else {
+                        toners = '-';
+                    }
+                } else {
+                    toners = '-';
+                }
+
+                html += `
     <tr>
         <td><span class="status-chip ${statusClass}">${statusText}</span></td>
         <td><strong>${imp.nome || imp.modelo || 'N/A'}</strong></td>
@@ -883,7 +893,7 @@ html += `
     </tr>
 `;
             });
-            
+
             html += `
                         </tbody>
                     </table>
@@ -892,9 +902,9 @@ html += `
                     </div>
                 </div>
             `;
-            
+
             content.innerHTML = html;
-                                
+
             // =============================================
             // BUSCAR INFORMAÇÕES DO SISTEMA DO CLIENTE
             // =============================================
@@ -902,11 +912,9 @@ html += `
                 fetch(`/api/cliente-info/${cliente.id_unico}`)
                     .then(response => response.json())
                     .then(info => {
-                        // Remover div antiga se existir
                         const divAntiga = document.getElementById('info-sistema-cliente');
                         if (divAntiga) divAntiga.remove();
-                        
-                        // Criar nova div com as informações
+
                         const infoDiv = document.createElement('div');
                         infoDiv.id = 'info-sistema-cliente';
                         infoDiv.style.cssText = 'background: #e9ecef; border-radius: 8px; padding: 8px 15px; margin: 10px 20px; font-size: 12px; display: flex; gap: 20px; flex-wrap: wrap;';
@@ -916,8 +924,7 @@ html += `
                             <span>💻 <strong>Sistema:</strong> ${info.sistema || 'N/A'}</span>
                             <span>📅 <strong>Última atualização:</strong> ${info.ultima_atualizacao ? new Date(info.ultima_atualizacao).toLocaleString() : 'N/A'}</span>
                         `;
-                        
-                        // Inserir após o content-header
+
                         const contentHeader = document.querySelector('.content-header');
                         if (contentHeader) {
                             contentHeader.insertAdjacentElement('afterend', infoDiv);
@@ -925,24 +932,19 @@ html += `
                     })
                     .catch(error => console.error('Erro ao carregar info do cliente:', error));
             }
-        }
-            
+
             // =============================================
             // ADICIONAR BOTÃO DE ATUALIZAÇÃO
             // =============================================
             setTimeout(() => {
-                // Verificar se já existe um botão
                 if (document.getElementById('btn-atualizar-cliente')) return;
-                
-                // Encontrar o header
+
                 const header = document.querySelector('.content-header');
                 if (!header) return;
-                
-                // Encontrar o título
+
                 const titulo = header.querySelector('.cliente-titulo');
                 if (!titulo) return;
-                
-                // Criar o botão
+
                 const btn = document.createElement('button');
                 btn.id = 'btn-atualizar-cliente';
                 btn.innerHTML = '🔄 Atualizar Agora';
@@ -960,34 +962,34 @@ html += `
                     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                     vertical-align: middle;
                 `;
-                
+
                 btn.onmouseover = () => btn.style.background = '#218838';
                 btn.onmouseout = () => btn.style.background = '#28a745';
                 btn.onclick = () => forcarColetaCliente(cliente.id_unico);
-                
+
                 titulo.appendChild(btn);
             }, 100);
         }
-
-// =============================================
-// FUNÇÃO DE LOGOUT
-// =============================================
-function fazerLogout() {
-    fetch('/api/logout', {
-        method: 'GET'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.href = '/login.html';
+        
+        // =============================================
+        // FUNÇÃO DE LOGOUT
+        // =============================================
+        function fazerLogout() {
+            fetch('/api/logout', {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/login.html';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao fazer logout:', error);
+                    window.location.href = '/login.html';
+                });
         }
-    })
-    .catch(error => {
-        console.error('Erro ao fazer logout:', error);
-        window.location.href = '/login.html';
-    });
-}
-
     </script>
 </body>
+
 </html>
