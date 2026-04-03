@@ -282,6 +282,15 @@ app.get('/api/dados', (req, res) => {
                         ultimaAtualizacao: ultimo.timestamp,
                         impressoras: dadosRecebidos.dados || []
                     };
+
+                    // =============================================
+                    // CALCULAR STATUS ONLINE DO CLIENTE
+                    // =============================================
+                    const ultimaAtualizacao = new Date(ultimo.timestamp);
+                    const agora = new Date();
+                    const diferencaMinutos = (agora - ultimaAtualizacao) / 1000 / 60;
+                    const clienteOnline = diferencaMinutos < 10; // Online se atualizou nos últimos 10 minutos
+                    // =============================================
                     
                     // Calcular estatísticas
                     const totalImpressoras = clienteInfo.impressoras.length;
