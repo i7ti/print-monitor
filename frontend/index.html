@@ -1,716 +1,739 @@
 <!-- frontend/index.html -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>System Print - Dashboard</title>
     <style>
-        /* === SEU CSS EXISTENTE (MANTIDO IGUAL) === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+      /* === SEU CSS EXISTENTE (MANTIDO IGUAL) === */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
 
-        body {
-            background: #f0f2f5;
-        }
+      body {
+        background: #f0f2f5;
+      }
 
-        .main-header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 8px 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
+      .main-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 8px 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
 
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1600px;
+        margin: 0 auto;
+      }
 
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 300;
-        }
+      .logo h1 {
+        font-size: 24px;
+        font-weight: 300;
+      }
 
-        .logo span {
-            font-weight: 700;
-            color: #ffd700;
-        }
+      .logo span {
+        font-weight: 700;
+        color: #ffd700;
+      }
 
-        .header-stats {
-            display: flex;
-            gap: 15px;
-        }
+      .header-stats {
+        display: flex;
+        gap: 15px;
+      }
 
-        .header-stat-item {
-            text-align: center;
-        }
+      .header-stat-item {
+        text-align: center;
+      }
 
-        .header-stat-value {
-            font-size: 20px;
-            font-weight: 700;
-        }
+      .header-stat-value {
+        font-size: 20px;
+        font-weight: 700;
+      }
 
-        .header-stat-label {
-            font-size: 10px;
-            opacity: 0.8;
-        }
+      .header-stat-label {
+        font-size: 10px;
+        opacity: 0.8;
+      }
 
-        .config-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
+      .config-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+        text-decoration: none;
+      }
 
-        .config-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
+      .config-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
 
+      .main-container {
+        max-width: 1600px;
+        margin: 20px auto;
+        padding: 0 20px;
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 20px;
+      }
+
+      .clientes-sidebar {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        height: fit-content;
+      }
+
+      .sidebar-header {
+        background: #f8f9fa;
+        padding: 15px;
+        border-bottom: 2px solid #e9ecef;
+      }
+
+      .sidebar-header h2 {
+        font-size: 18px;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .sidebar-header h2 i {
+        color: #2a5298;
+      }
+
+      .busca-cliente {
+        padding: 15px;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .busca-cliente input {
+        width: 100%;
+        padding: 10px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s;
+      }
+
+      .busca-cliente input:focus {
+        outline: none;
+        border-color: #2a5298;
+      }
+
+      .clientes-lista {
+        max-height: calc(100vh - 300px);
+        overflow-y: auto;
+        padding: 10px;
+      }
+
+      .cliente-card {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .cliente-card:hover {
+        border-color: #2a5298;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(42, 82, 152, 0.15);
+      }
+
+      .cliente-card.selecionado {
+        border-color: #2a5298;
+        background: #f0f7ff;
+      }
+
+      .cliente-nome {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1e3c72;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .cliente-badge {
+        background: #2a5298;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+      }
+
+      .cliente-resumo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .resumo-item {
+        text-align: center;
+        padding: 8px;
+        border-radius: 8px;
+        background: #f8f9fa;
+      }
+
+      .resumo-valor {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1e3c72;
+      }
+
+      .resumo-label {
+        font-size: 10px;
+        color: #6c757d;
+        text-transform: uppercase;
+      }
+
+      .cliente-status {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #6c757d;
+        border-top: 1px solid #e9ecef;
+        padding-top: 8px;
+        margin-top: 8px;
+      }
+
+      .main-content {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .content-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 20px;
+        border-bottom: 2px solid #dee2e6;
+      }
+
+      .cliente-titulo {
+        font-size: 24px;
+        font-weight: 300;
+        color: #1e3c72;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .cliente-titulo strong {
+        font-weight: 700;
+        color: #2a5298;
+      }
+
+      .info-extra {
+        display: flex;
+        gap: 20px;
+        margin-top: 10px;
+        font-size: 14px;
+        color: #6c757d;
+        flex-wrap: wrap;
+      }
+
+      .resumo-cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        padding: 20px;
+      }
+
+      .resumo-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s;
+      }
+
+      .resumo-card.total {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+      }
+
+      .resumo-card.pb {
+        background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+        color: white;
+      }
+
+      .resumo-card.color {
+        background: linear-gradient(135deg, #c44536 0%, #e67e22 100%);
+        color: white;
+      }
+
+      .resumo-card.impressoras {
+        background: linear-gradient(135deg, #0b845c 0%, #2ecc71 100%);
+        color: white;
+      }
+
+      .card-valor {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 10px 0;
+      }
+
+      .card-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.9;
+      }
+
+      .impressoras-section {
+        padding: 0 20px 20px 20px;
+      }
+
+      .section-title {
+        font-size: 18px;
+        color: #495057;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e9ecef;
+      }
+
+      .tabela-impressoras {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .tabela-impressoras th {
+        text-align: left;
+        padding: 12px 10px;
+        background: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .tabela-impressoras td {
+        padding: 15px 10px;
+        border-bottom: 1px solid #e9ecef;
+        font-size: 14px;
+      }
+
+      .tabela-impressoras tr:hover {
+        background: #f8f9fa;
+      }
+
+      .status-chip {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .status-online {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-offline {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .toner-indicators {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+
+      .toner-dot {
+        width: 25px;
+        height: 25px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: bold;
+      }
+
+      .toner-preto {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .toner-ciano {
+        background: #3498db;
+        color: white;
+      }
+
+      .toner-magenta {
+        background: #e83e8c;
+        color: white;
+      }
+
+      .toner-amarelo {
+        background: #f1c40f;
+        color: black;
+      }
+
+      .valor-contador {
+        font-weight: 700;
+        color: #1e3c72;
+      }
+
+      .setor-badge {
+        background: #e9ecef;
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-size: 11px;
+        color: #495057;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 50px;
+        color: #6c757d;
+      }
+
+      .no-cliente {
+        text-align: center;
+        padding: 50px;
+        color: #6c757d;
+      }
+
+      .no-cliente i {
+        font-size: 48px;
+        margin-bottom: 20px;
+        opacity: 0.3;
+      }
+
+      .mensagem-sem-resultado {
+        padding: 20px;
+        text-align: center;
+        color: #6c757d;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #2a5298;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #1e3c72;
+      }
+
+      @media (max-width: 1200px) {
         .main-container {
-            max-width: 1600px;
-            margin: 20px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 20px;
-        }
-
-        .clientes-sidebar {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            height: fit-content;
-        }
-
-        .sidebar-header {
-            background: #f8f9fa;
-            padding: 15px;
-            border-bottom: 2px solid #e9ecef;
-        }
-
-        .sidebar-header h2 {
-            font-size: 18px;
-            color: #495057;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .sidebar-header h2 i {
-            color: #2a5298;
-        }
-
-        .busca-cliente {
-            padding: 15px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .busca-cliente input {
-            width: 100%;
-            padding: 10px 15px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .busca-cliente input:focus {
-            outline: none;
-            border-color: #2a5298;
-        }
-
-        .clientes-lista {
-            max-height: calc(100vh - 300px);
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .cliente-card {
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .cliente-card:hover {
-            border-color: #2a5298;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.15);
-        }
-
-        .cliente-card.selecionado {
-            border-color: #2a5298;
-            background: #f0f7ff;
-        }
-
-        .cliente-nome {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1e3c72;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cliente-badge {
-            background: #2a5298;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-size: 11px;
-        }
-
-        .cliente-resumo {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .resumo-item {
-            text-align: center;
-            padding: 8px;
-            border-radius: 8px;
-            background: #f8f9fa;
-        }
-
-        .resumo-valor {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1e3c72;
-        }
-
-        .resumo-label {
-            font-size: 10px;
-            color: #6c757d;
-            text-transform: uppercase;
-        }
-
-        .cliente-status {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: #6c757d;
-            border-top: 1px solid #e9ecef;
-            padding-top: 8px;
-            margin-top: 8px;
-        }
-
-        .main-content {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .content-header {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 20px;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .cliente-titulo {
-            font-size: 24px;
-            font-weight: 300;
-            color: #1e3c72;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .cliente-titulo strong {
-            font-weight: 700;
-            color: #2a5298;
-        }
-
-        .info-extra {
-            display: flex;
-            gap: 20px;
-            margin-top: 10px;
-            font-size: 14px;
-            color: #6c757d;
-            flex-wrap: wrap;
+          grid-template-columns: 1fr;
         }
 
         .resumo-cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            padding: 20px;
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 1200px) {
+        .main-container {
+          grid-template-columns: 1fr;
         }
 
-        .resumo-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s;
+        .resumo-cards {
+          grid-template-columns: repeat(2, 1fr);
         }
+      }
 
-        .resumo-card.total {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-        }
+      /* ===== NOVO CSS DO BOTÃO DE LOGOUT ===== */
+      .btn-logout {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        margin-left: 20px;
+        transition: all 0.3s;
+      }
 
-        .resumo-card.pb {
-            background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
-            color: white;
-        }
-
-        .resumo-card.color {
-            background: linear-gradient(135deg, #c44536 0%, #e67e22 100%);
-            color: white;
-        }
-
-        .resumo-card.impressoras {
-            background: linear-gradient(135deg, #0b845c 0%, #2ecc71 100%);
-            color: white;
-        }
-
-        .card-valor {
-            font-size: 32px;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .card-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-        }
-
-        .impressoras-section {
-            padding: 0 20px 20px 20px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            color: #495057;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e9ecef;
-        }
-
-        .tabela-impressoras {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .tabela-impressoras th {
-            text-align: left;
-            padding: 12px 10px;
-            background: #f8f9fa;
-            color: #495057;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .tabela-impressoras td {
-            padding: 15px 10px;
-            border-bottom: 1px solid #e9ecef;
-            font-size: 14px;
-        }
-
-        .tabela-impressoras tr:hover {
-            background: #f8f9fa;
-        }
-
-        .status-chip {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .status-online {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-offline {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .toner-indicators {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-
-        .toner-dot {
-            width: 25px;
-            height: 25px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .toner-preto {
-            background: #2c3e50;
-            color: white;
-        }
-
-        .toner-ciano {
-            background: #3498db;
-            color: white;
-        }
-
-        .toner-magenta {
-            background: #e83e8c;
-            color: white;
-        }
-
-        .toner-amarelo {
-            background: #f1c40f;
-            color: black;
-        }
-
-        .valor-contador {
-            font-weight: 700;
-            color: #1e3c72;
-        }
-
-        .setor-badge {
-            background: #e9ecef;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 11px;
-            color: #495057;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 50px;
-            color: #6c757d;
-        }
-
-        .no-cliente {
-            text-align: center;
-            padding: 50px;
-            color: #6c757d;
-        }
-
-        .no-cliente i {
-            font-size: 48px;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
-
-        .mensagem-sem-resultado {
-            padding: 20px;
-            text-align: center;
-            color: #6c757d;
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #2a5298;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #1e3c72;
-        }
-
-        @media (max-width: 1200px) {
-            .main-container {
-                grid-template-columns: 1fr;
-            }
-
-            .resumo-cards {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .main-container {
-                grid-template-columns: 1fr;
-            }
-
-            .resumo-cards {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* ===== NOVO CSS DO BOTÃO DE LOGOUT ===== */
-        .btn-logout {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            margin-left: 20px;
-            transition: all 0.3s;
-        }
-
-        .btn-logout:hover {
-            background: #c82333;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
+      .btn-logout:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <header class="main-header">
-        <div class="header-content">
-            <div class="logo" style="display: flex; align-items: center;">
-                <img src="/logo.png" alt="System Print" style="height: 45px; 
-                width: auto; 
-                margin-right: 15px;">
-                <h1>System <span>Print</span> Monitor</h1>
-            </div>
-            <!-- resto do header -->
-            <div class="header-stats" id="headerStats">
-                <div class="header-stat-item">
-                    <div class="header-stat-value" id="totalClientes">0</div>
-                    <div class="header-stat-label">Clientes</div>
-                </div>
-                <div class="header-stat-item">
-                    <div class="header-stat-value" id="totalImpressoras">0</div>
-                    <div class="header-stat-label">Impressoras</div>
-                </div>
-                <div class="header-stat-item">
-                    <div class="header-stat-value" id="totalOnline">0</div>
-                    <div class="header-stat-label">Online</div>
-                </div>
-                <div class="header-stat-item">
-                    <div class="header-stat-value" id="totalPaginas">0</div>
-                    <div class="header-stat-label">Páginas</div>
-                </div>
-            </div>
-            <div>
-                <button onclick="fazerLogout()" class="btn-logout">🔓 Sair</button>
-            </div>
+      <div class="header-content">
+        <div class="logo" style="display: flex; align-items: center">
+          <img
+            src="/logo.png"
+            alt="System Print"
+            style="height: 45px; width: auto; margin-right: 15px"
+          />
+          <h1>System <span>Print</span> Monitor</h1>
         </div>
+        <!-- resto do header -->
+        <div class="header-stats" id="headerStats">
+          <div class="header-stat-item">
+            <div class="header-stat-value" id="totalClientes">0</div>
+            <div class="header-stat-label">Clientes</div>
+          </div>
+          <div class="header-stat-item">
+            <div class="header-stat-value" id="totalImpressoras">0</div>
+            <div class="header-stat-label">Impressoras</div>
+          </div>
+          <div class="header-stat-item">
+            <div class="header-stat-value" id="totalOnline">0</div>
+            <div class="header-stat-label">Online</div>
+          </div>
+          <div class="header-stat-item">
+            <div class="header-stat-value" id="totalPaginas">0</div>
+            <div class="header-stat-label">Páginas</div>
+          </div>
+        </div>
+        <div>
+          <button onclick="fazerLogout()" class="btn-logout">🔓 Sair</button>
+        </div>
+      </div>
     </header>
 
     <div class="main-container">
-        <!-- Sidebar de Clientes -->
-        <aside class="clientes-sidebar">
-            <div class="sidebar-header">
-                <h2><i>👥</i> Clientes</h2>
-            </div>
-            <div class="busca-cliente">
-                <input type="text" id="buscaCliente" placeholder="🔍 Buscar cliente..." onkeyup="filtrarClientes()">
-            </div>
-            <div class="clientes-lista" id="clientesLista">
-                <div class="loading">Carregando...</div>
-            </div>
-        </aside>
+      <!-- Sidebar de Clientes -->
+      <aside class="clientes-sidebar">
+        <div class="sidebar-header">
+          <h2><i>👥</i> Clientes</h2>
+        </div>
+        <div class="busca-cliente">
+          <input
+            type="text"
+            id="buscaCliente"
+            placeholder="🔍 Buscar cliente..."
+            onkeyup="filtrarClientes()"
+          />
+        </div>
+        <div class="clientes-lista" id="clientesLista">
+          <div class="loading">Carregando...</div>
+        </div>
+      </aside>
 
-        <main class="main-content" id="mainContent">
-            <div class="no-cliente">
-                <i>🖨️</i>
-                <h3>Selecione um cliente</h3>
-                <p>Clique em um cliente na lista para ver os detalhes</p>
-            </div>
-        </main>
+      <main class="main-content" id="mainContent">
+        <div class="no-cliente">
+          <i>🖨️</i>
+          <h3>Selecione um cliente</h3>
+          <p>Clique em um cliente na lista para ver os detalhes</p>
+        </div>
+      </main>
     </div>
 
     <script>
-        // =============================================
-        // CÓDIGO CORRIGIDO PARA A ESTRUTURA DO SERVIDOR
-        // =============================================
+      // =============================================
+      // CÓDIGO CORRIGIDO PARA A ESTRUTURA DO SERVIDOR
+      // =============================================
 
-        let clientes = [];
-        let clienteSelecionado = null;
+      let clientes = [];
+      let clienteSelecionado = null;
 
-        // =============================================
-        // FUNÇÕES PARA COLETA FORÇADA
-        // =============================================
-        function forcarColetaCliente(idCliente) {
-            const btn = document.getElementById('btn-atualizar-cliente');
-            if (!btn) return;
+      // =============================================
+      // FUNÇÕES PARA COLETA FORÇADA
+      // =============================================
+      function forcarColetaCliente(idCliente) {
+        const btn = document.getElementById("btn-atualizar-cliente");
+        if (!btn) return;
 
-            const textoOriginal = btn.innerHTML;
+        const textoOriginal = btn.innerHTML;
 
-            // Desabilitar botão e mostrar loading
-            btn.innerHTML = '⏳ Solicitando...';
-            btn.disabled = true;
-            btn.style.background = '#6c757d';
-            btn.style.cursor = 'not-allowed';
+        // Desabilitar botão e mostrar loading
+        btn.innerHTML = "⏳ Solicitando...";
+        btn.disabled = true;
+        btn.style.background = "#6c757d";
+        btn.style.cursor = "not-allowed";
 
-            // Fazer requisição para o servidor
-            fetch(`/api/forcar-coleta/${encodeURIComponent(idCliente)}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'ok') {
-                        btn.innerHTML = '✅ Solicitado!';
-                        setTimeout(() => {
-                            btn.innerHTML = textoOriginal;
-                            btn.disabled = false;
-                            btn.style.background = '#28a745';
-                            btn.style.cursor = 'pointer';
-                        }, 2000);
-                    } else {
-                        throw new Error(data.erro || 'Erro desconhecido');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    btn.innerHTML = '❌ Erro';
-                    setTimeout(() => {
-                        btn.innerHTML = textoOriginal;
-                        btn.disabled = false;
-                        btn.style.background = '#28a745';
-                        btn.style.cursor = 'pointer';
-                    }, 2000);
-                });
-        }
+        // Fazer requisição para o servidor
+        fetch(`/api/forcar-coleta/${encodeURIComponent(idCliente)}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "ok") {
+              btn.innerHTML = "✅ Solicitado!";
+              setTimeout(() => {
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+                btn.style.background = "#28a745";
+                btn.style.cursor = "pointer";
+              }, 2000);
+            } else {
+              throw new Error(data.erro || "Erro desconhecido");
+            }
+          })
+          .catch((error) => {
+            console.error("Erro:", error);
+            btn.innerHTML = "❌ Erro";
+            setTimeout(() => {
+              btn.innerHTML = textoOriginal;
+              btn.disabled = false;
+              btn.style.background = "#28a745";
+              btn.style.cursor = "pointer";
+            }, 2000);
+          });
+      }
 
-        // Atualizar a cada 10 segundos
-        setInterval(carregarDados, 300000);
-        carregarDados();
+      // Atualizar a cada 10 segundos
+      setInterval(carregarDados, 300000);
+      carregarDados();
 
-        async function carregarDados() {
-            try {
-                const response = await fetch('/api/dados');
+      async function carregarDados() {
+        try {
+          const response = await fetch("/api/dados");
 
-                // Se não autorizado (401), redireciona para login
-                if (response.status === 401) {
-                    console.log('⏰ Sessão expirada, redirecionando...');
-                    window.location.href = '/login.html';
-                    return;
-                }
+          // Se não autorizado (401), redireciona para login
+          if (response.status === 401) {
+            console.log("⏰ Sessão expirada, redirecionando...");
+            window.location.href = "/login.html";
+            return;
+          }
 
-                const dados = await response.json();
-                console.log('Dados recebidos:', dados);
+          const dados = await response.json();
+          console.log("Dados recebidos:", dados);
 
-                // GARANTIR que clientes seja sempre um array
-                if (Array.isArray(dados)) {
-                    clientes = dados;
-                } else if (dados && typeof dados === 'object') {
-                    // Se for um objeto (único cliente), converte para array
-                    console.log('⚠️ Dados recebidos como objeto, convertendo para array');
-                    clientes = [dados];
-                } else {
-                    console.log('⚠️ Dados inválidos, usando array vazio');
-                    clientes = [];
-                }
+          // GARANTIR que clientes seja sempre um array
+          if (Array.isArray(dados)) {
+            clientes = dados;
+          } else if (dados && typeof dados === "object") {
+            // Se for um objeto (único cliente), converte para array
+            console.log(
+              "⚠️ Dados recebidos como objeto, convertendo para array",
+            );
+            clientes = [dados];
+          } else {
+            console.log("⚠️ Dados inválidos, usando array vazio");
+            clientes = [];
+          }
 
-                atualizarHeader();
-                atualizarSidebar();
+          atualizarHeader();
+          atualizarSidebar();
 
-                // Se tinha um cliente selecionado, atualiza usando ID ÚNICO
-                if (clienteSelecionado) {
-                    const clienteAtual = clientes.find(c => c.id_unico === clienteSelecionado.id_unico);
-                    if (clienteAtual) {
-                        mostrarDetalhesCliente(clienteAtual);
-                    } else {
-                        clienteSelecionado = null;
-                        document.getElementById('mainContent').innerHTML = `
+          // Se tinha um cliente selecionado, atualiza usando ID ÚNICO
+          if (clienteSelecionado) {
+            const clienteAtual = clientes.find(
+              (c) => c.id_unico === clienteSelecionado.id_unico,
+            );
+            if (clienteAtual) {
+              mostrarDetalhesCliente(clienteAtual);
+            } else {
+              clienteSelecionado = null;
+              document.getElementById("mainContent").innerHTML = `
                     <div class="no-cliente">
                         <i>🖨️</i>
                         <h3>Selecione um cliente</h3>
                         <p>Clique em um cliente na lista para ver os detalhes</p>
                     </div>
                 `;
-                    }
-                }
-            } catch (error) {
-                console.error('Erro ao carregar dados:', error);
-                clientes = [];
             }
+          }
+        } catch (error) {
+          console.error("Erro ao carregar dados:", error);
+          clientes = [];
+        }
+      }
+
+      function atualizarHeader() {
+        const totalClientes = clientes.length;
+        let totalImpressoras = 0;
+        let totalOnline = 0;
+        let totalPaginas = 0;
+
+        clientes.forEach((cliente) => {
+          totalImpressoras += cliente.impressoras?.length || 0;
+          totalOnline +=
+            cliente.impressoras?.filter((i) => i.status === "online").length ||
+            0;
+          cliente.impressoras?.forEach((imp) => {
+            totalPaginas += parseInt(imp.contadores?.total) || 0;
+          });
+        });
+
+        document.getElementById("totalClientes").textContent = totalClientes;
+        document.getElementById("totalImpressoras").textContent =
+          totalImpressoras;
+        document.getElementById("totalOnline").textContent = totalOnline;
+        document.getElementById("totalPaginas").textContent =
+          totalPaginas.toLocaleString("pt-BR");
+      }
+
+      function atualizarSidebar() {
+        const lista = document.getElementById("clientesLista");
+        const busca = document
+          .getElementById("buscaCliente")
+          .value.toLowerCase();
+
+        if (!clientes || clientes.length === 0) {
+          lista.innerHTML =
+            '<div class="loading">Nenhum cliente encontrado</div>';
+          return;
         }
 
-        function atualizarHeader() {
-            const totalClientes = clientes.length;
-            let totalImpressoras = 0;
-            let totalOnline = 0;
-            let totalPaginas = 0;
+        const clientesFiltrados = clientes.filter((c) =>
+          c.nome?.toLowerCase().includes(busca),
+        );
 
-            clientes.forEach(cliente => {
-                totalImpressoras += cliente.impressoras?.length || 0;
-                totalOnline += cliente.impressoras?.filter(i => i.status === 'online').length || 0;
-                cliente.impressoras?.forEach(imp => {
-                    totalPaginas += parseInt(imp.contadores?.total) || 0;
-                });
+        if (clientesFiltrados.length === 0) {
+          lista.innerHTML =
+            '<div class="mensagem-sem-resultado">Nenhum cliente encontrado</div>';
+          return;
+        }
+
+        lista.innerHTML = clientesFiltrados
+          .map((cliente) => {
+            // Usar id_unico para seleção
+            const selecionado =
+              clienteSelecionado?.id_unico === cliente.id_unico
+                ? "selecionado"
+                : "";
+            const totalImp = cliente.impressoras?.length || 0;
+            const online =
+              cliente.impressoras?.filter((i) => i.status === "online")
+                .length || 0;
+            const offline = totalImp - online;
+            let totalPaginas = 0;
+            cliente.impressoras?.forEach((imp) => {
+              totalPaginas += parseInt(imp.contadores?.total) || 0;
             });
 
-            document.getElementById('totalClientes').textContent = totalClientes;
-            document.getElementById('totalImpressoras').textContent = totalImpressoras;
-            document.getElementById('totalOnline').textContent = totalOnline;
-            document.getElementById('totalPaginas').textContent = totalPaginas.toLocaleString('pt-BR');
-        }
+            // Nome para exibição (inclui id_obra se existir)
+            const nomeExibicao = cliente.id_obra
+              ? `${cliente.nome} (${cliente.id_obra})`
+              : cliente.nome;
 
-        function atualizarSidebar() {
-            const lista = document.getElementById('clientesLista');
-            const busca = document.getElementById('buscaCliente').value.toLowerCase();
-
-            if (!clientes || clientes.length === 0) {
-                lista.innerHTML = '<div class="loading">Nenhum cliente encontrado</div>';
-                return;
-            }
-
-            const clientesFiltrados = clientes.filter(c =>
-                c.nome?.toLowerCase().includes(busca)
-            );
-
-            if (clientesFiltrados.length === 0) {
-                lista.innerHTML = '<div class="mensagem-sem-resultado">Nenhum cliente encontrado</div>';
-                return;
-            }
-
-            lista.innerHTML = clientesFiltrados.map(cliente => {
-                // Usar id_unico para seleção
-                const selecionado = clienteSelecionado?.id_unico === cliente.id_unico ? 'selecionado' : '';
-                const totalImp = cliente.impressoras?.length || 0;
-                const online = cliente.impressoras?.filter(i => i.status === 'online').length || 0;
-                const offline = totalImp - online;
-                let totalPaginas = 0;
-                cliente.impressoras?.forEach(imp => {
-                    totalPaginas += parseInt(imp.contadores?.total) || 0;
-                });
-
-                // Nome para exibição (inclui id_obra se existir)
-                const nomeExibicao = cliente.id_obra ?
-                    `${cliente.nome} (${cliente.id_obra})` :
-                    cliente.nome;
-
-                return `
+            return `
                     <div class="cliente-card ${selecionado}" onclick="selecionarCliente('${cliente.id_unico}')">
                         <div class="cliente-nome">
                             ${nomeExibicao}
@@ -728,7 +751,7 @@
                         </div>
                         <div class="cliente-resumo">
                             <div class="resumo-item" style="background: #e2e3e5;">
-                                <div class="resumo-valor">${totalPaginas.toLocaleString('pt-BR')}</div>
+                                <div class="resumo-valor">${totalPaginas.toLocaleString("pt-BR")}</div>
                                 <div class="resumo-label">Páginas</div>
                             </div>
                         </div>
@@ -737,35 +760,36 @@
                         </div>
                     </div>
                 `;
-            }).join('');
+          })
+          .join("");
+      }
+
+      function selecionarCliente(idUnico) {
+        clienteSelecionado = clientes.find((c) => c.id_unico === idUnico);
+        if (clienteSelecionado) {
+          mostrarDetalhesCliente(clienteSelecionado);
+          atualizarSidebar();
         }
+      }
 
-        function selecionarCliente(idUnico) {
-            clienteSelecionado = clientes.find(c => c.id_unico === idUnico);
-            if (clienteSelecionado) {
-                mostrarDetalhesCliente(clienteSelecionado);
-                atualizarSidebar();
-            }
-        }
+      function filtrarClientes() {
+        atualizarSidebar();
+      }
 
-        function filtrarClientes() {
-            atualizarSidebar();
-        }
+      function mostrarDetalhesCliente(cliente) {
+        const content = document.getElementById("mainContent");
 
-               function mostrarDetalhesCliente(cliente) {
-            const content = document.getElementById('mainContent');
+        // IMPORTANTE: As impressoras estão em cliente.impressoras
+        const impressoras = cliente.impressoras || [];
 
-            // IMPORTANTE: As impressoras estão em cliente.impressoras
-            const impressoras = cliente.impressoras || [];
-
-            if (impressoras.length === 0) {
-                content.innerHTML = `
+        if (impressoras.length === 0) {
+          content.innerHTML = `
                     <div class="content-header">
                         <div class="cliente-titulo">
                             Cliente: <strong>${cliente.nome}</strong>
                             <span style="font-size: 14px; margin-left: 15px; color: #666;">
-                                ${cliente.cidade ? `📍 ${cliente.cidade}` : ''} 
-                                ${cliente.id_obra ? `- Obra: ${cliente.id_obra}` : ''}
+                                ${cliente.cidade ? `📍 ${cliente.cidade}` : ""} 
+                                ${cliente.id_obra ? `- Obra: ${cliente.id_obra}` : ""}
                             </span>
                         </div>
                     </div>
@@ -773,54 +797,57 @@
                         <p>Nenhuma impressora cadastrada para este cliente.</p>
                     </div>
                 `;
-                return;
-            }
+          return;
+        }
 
-            const totalPaginas = impressoras.reduce((acc, i) => acc + (parseInt(i.contadores?.total) || 0), 0);
-            const online = impressoras.filter(i => i.status === 'online').length;
-            const offline = impressoras.length - online;
+        const totalPaginas = impressoras.reduce(
+          (acc, i) => acc + (parseInt(i.contadores?.total) || 0),
+          0,
+        );
+        const online = impressoras.filter((i) => i.status === "online").length;
+        const offline = impressoras.length - online;
 
-            // Calcular PB e Cor
-            let totalPB = 0;
-            let totalCor = 0;
-            impressoras.forEach(imp => {
-                if (imp.status === 'online') {
-                    totalPB += parseInt(imp.contadores?.preto) || 0;
-                    totalCor += parseInt(imp.contadores?.cor) || 0;
-                }
-            });
+        // Calcular PB e Cor
+        let totalPB = 0;
+        let totalCor = 0;
+        impressoras.forEach((imp) => {
+          if (imp.status === "online") {
+            totalPB += parseInt(imp.contadores?.preto) || 0;
+            totalCor += parseInt(imp.contadores?.cor) || 0;
+          }
+        });
 
-            let html = `
+        let html = `
                 <div class="content-header">
                     <div class="cliente-titulo">
                         Cliente: <strong>${cliente.nome}</strong>
                         <span style="font-size: 14px; margin-left: 15px; color: #666;">
-                            ${cliente.cidade ? `📍 ${cliente.cidade}` : ''} 
-                            ${cliente.id_obra ? `- Obra: ${cliente.id_obra}` : ''}
+                            ${cliente.cidade ? `📍 ${cliente.cidade}` : ""} 
+                            ${cliente.id_obra ? `- Obra: ${cliente.id_obra}` : ""}
                         </span>
                     </div>
                     <div class="info-extra">
-                        <span>📊 Total: ${totalPaginas.toLocaleString('pt-BR')} páginas</span>
+                        <span>📊 Total: ${totalPaginas.toLocaleString("pt-BR")} páginas</span>
                         <span>🖨️ ${impressoras.length} impressoras</span>
                         <span>✅ Online: ${online}</span>
                         <span>❌ Offline: ${offline}</span>
-                        <span>⚫ PB: ${totalPB.toLocaleString('pt-BR')}</span>
-                        <span>🔴 Cor: ${totalCor.toLocaleString('pt-BR')}</span>
+                        <span>⚫ PB: ${totalPB.toLocaleString("pt-BR")}</span>
+                        <span>🔴 Cor: ${totalCor.toLocaleString("pt-BR")}</span>
                     </div>
                 </div>
                 
                 <div class="resumo-cards">
                     <div class="resumo-card total">
                         <div class="card-label">Total Páginas</div>
-                        <div class="card-valor">${totalPaginas.toLocaleString('pt-BR')}</div>
+                        <div class="card-valor">${totalPaginas.toLocaleString("pt-BR")}</div>
                     </div>
                     <div class="resumo-card pb">
                         <div class="card-label">Preto & Branco</div>
-                        <div class="card-valor">${totalPB.toLocaleString('pt-BR')}</div>
+                        <div class="card-valor">${totalPB.toLocaleString("pt-BR")}</div>
                     </div>
                     <div class="resumo-card color">
                         <div class="card-label">Colorido</div>
-                        <div class="card-valor">${totalCor.toLocaleString('pt-BR')}</div>
+                        <div class="card-valor">${totalCor.toLocaleString("pt-BR")}</div>
                     </div>
                     <div class="resumo-card impressoras">
                         <div class="card-label">Impressoras</div>
@@ -847,108 +874,112 @@
                         <tbody>
             `;
 
-            impressoras.forEach(imp => {
-                const statusClass = imp.status === 'online' ? 'status-online' : 'status-offline';
-                const statusText = imp.status === 'online' ? '● Online' : '○ Offline';
+        impressoras.forEach((imp) => {
+          const statusClass =
+            imp.status === "online" ? "status-online" : "status-offline";
+          const statusText = imp.status === "online" ? "● Online" : "○ Offline";
 
-                const pb = parseInt(imp.contadores?.preto) || 0;
-                const cor = parseInt(imp.contadores?.cor) || 0;
-                const total = parseInt(imp.contadores?.total) || 0;
+          const pb = parseInt(imp.contadores?.preto) || 0;
+          const cor = parseInt(imp.contadores?.cor) || 0;
+          const total = parseInt(imp.contadores?.total) || 0;
 
-                // Toners
-                let toners = '';
-                if (imp.toners) {
-                    const temToners = Object.keys(imp.toners).length > 0;
-                    if (temToners) {
-                        if (imp.toners.toner_preto) {
-                            toners += `<span class="toner-dot toner-preto" title="Preto ${imp.toners.toner_preto}%">P</span>`;
-                        }
-                        if (imp.toners.toner_ciano) {
-                            toners += `<span class="toner-dot toner-ciano" title="Ciano ${imp.toners.toner_ciano}%">C</span>`;
-                        }
-                        if (imp.toners.toner_magenta) {
-                            toners += `<span class="toner-dot toner-magenta" title="Magenta ${imp.toners.toner_magenta}%">M</span>`;
-                        }
-                        if (imp.toners.toner_amarelo) {
-                            toners += `<span class="toner-dot toner-amarelo" title="Amarelo ${imp.toners.toner_amarelo}%">Y</span>`;
-                        }
-                    } else {
-                        toners = '-';
-                    }
-                } else {
-                    toners = '-';
-                }
+          // Toners
+          let toners = "";
+          if (imp.toners) {
+            const temToners = Object.keys(imp.toners).length > 0;
+            if (temToners) {
+              if (imp.toners.toner_preto) {
+                toners += `<span class="toner-dot toner-preto" title="Preto ${imp.toners.toner_preto}%">P</span>`;
+              }
+              if (imp.toners.toner_ciano) {
+                toners += `<span class="toner-dot toner-ciano" title="Ciano ${imp.toners.toner_ciano}%">C</span>`;
+              }
+              if (imp.toners.toner_magenta) {
+                toners += `<span class="toner-dot toner-magenta" title="Magenta ${imp.toners.toner_magenta}%">M</span>`;
+              }
+              if (imp.toners.toner_amarelo) {
+                toners += `<span class="toner-dot toner-amarelo" title="Amarelo ${imp.toners.toner_amarelo}%">Y</span>`;
+              }
+            } else {
+              toners = "-";
+            }
+          } else {
+            toners = "-";
+          }
 
-                html += `
+          html += `
     <tr>
         <td><span class="status-chip ${statusClass}">${statusText}</span></td>
-        <td><strong>${imp.nome || imp.modelo || 'N/A'}</strong></td>
-        <td>${imp.modelo || 'N/A'}</td>
-        <td><span class="setor-badge">${imp.setor || 'N/A'}</span></td>
-        <td>${imp.ip || 'N/A'}</td>
-        <td class="valor-contador">${pb.toLocaleString('pt-BR')}</td>
-        <td class="valor-contador">${cor.toLocaleString('pt-BR')}</td>
-        <td class="valor-contador">${total.toLocaleString('pt-BR')}</td>
+        <td><strong>${imp.nome || imp.modelo || "N/A"}</strong></td>
+        <td>${imp.modelo || "N/A"}</td>
+        <td><span class="setor-badge">${imp.setor || "N/A"}</span></td>
+        <td>${imp.ip || "N/A"}</td>
+        <td class="valor-contador">${pb.toLocaleString("pt-BR")}</td>
+        <td class="valor-contador">${cor.toLocaleString("pt-BR")}</td>
+        <td class="valor-contador">${total.toLocaleString("pt-BR")}</td>
         <td><div class="toner-indicators">${toners}</div></td>
     </tr>
 `;
-            });
+        });
 
-            html += `
+        html += `
                         </tbody>
                     </table>
                     <div style="margin-top: 15px; font-size: 12px; color: #999; text-align: right;">
-                        Última atualização: ${new Date(cliente.ultimaAtualizacao).toLocaleString('pt-BR')}
+                        Última atualização: ${new Date(cliente.ultimaAtualizacao).toLocaleString("pt-BR")}
                     </div>
                 </div>
             `;
 
-            content.innerHTML = html;
+        content.innerHTML = html;
 
-            // =============================================
-            // BUSCAR INFORMAÇÕES DO SISTEMA DO CLIENTE
-            // =============================================
-            if (cliente.id_unico) {
-                fetch(`/api/cliente-info/${cliente.id_unico}`)
-                    .then(response => response.json())
-                    .then(info => {
-                        const divAntiga = document.getElementById('info-sistema-cliente');
-                        if (divAntiga) divAntiga.remove();
+        // =============================================
+        // BUSCAR INFORMAÇÕES DO SISTEMA DO CLIENTE
+        // =============================================
+        if (cliente.id_unico) {
+          fetch(`/api/cliente-info/${cliente.id_unico}`)
+            .then((response) => response.json())
+            .then((info) => {
+              const divAntiga = document.getElementById("info-sistema-cliente");
+              if (divAntiga) divAntiga.remove();
 
-                        const infoDiv = document.createElement('div');
-                        infoDiv.id = 'info-sistema-cliente';
-                        infoDiv.style.cssText = 'background: #e9ecef; border-radius: 8px; padding: 8px 15px; margin: 10px 20px; font-size: 12px; display: flex; gap: 20px; flex-wrap: wrap;';
-                        infoDiv.innerHTML = `
-                            <span>🖥️ <strong>Computador:</strong> ${info.hostname || 'N/A'}</span>
-                            <span>🌐 <strong>IP:</strong> ${info.ip_local || 'N/A'}</span>
-                            <span>💻 <strong>Sistema:</strong> ${info.sistema || 'N/A'}</span>
-                            <span>📅 <strong>Última atualização:</strong> ${info.ultima_atualizacao ? new Date(info.ultima_atualizacao).toLocaleString() : 'N/A'}</span>
+              const infoDiv = document.createElement("div");
+              infoDiv.id = "info-sistema-cliente";
+              infoDiv.style.cssText =
+                "background: #e9ecef; border-radius: 8px; padding: 8px 15px; margin: 10px 20px; font-size: 12px; display: flex; gap: 20px; flex-wrap: wrap;";
+              infoDiv.innerHTML = `
+                            <span>🖥️ <strong>Computador:</strong> ${info.hostname || "N/A"}</span>
+                            <span>🌐 <strong>IP:</strong> ${info.ip_local || "N/A"}</span>
+                            <span>💻 <strong>Sistema:</strong> ${info.sistema || "N/A"}</span>
+                            <span>📅 <strong>Última atualização:</strong> ${info.ultima_atualizacao ? new Date(info.ultima_atualizacao).toLocaleString() : "N/A"}</span>
                         `;
 
-                        const contentHeader = document.querySelector('.content-header');
-                        if (contentHeader) {
-                            contentHeader.insertAdjacentElement('afterend', infoDiv);
-                        }
-                    })
-                    .catch(error => console.error('Erro ao carregar info do cliente:', error));
-            }
+              const contentHeader = document.querySelector(".content-header");
+              if (contentHeader) {
+                contentHeader.insertAdjacentElement("afterend", infoDiv);
+              }
+            })
+            .catch((error) =>
+              console.error("Erro ao carregar info do cliente:", error),
+            );
+        }
 
-            // =============================================
-            // ADICIONAR BOTÃO DE ATUALIZAÇÃO
-            // =============================================
-            setTimeout(() => {
-                if (document.getElementById('btn-atualizar-cliente')) return;
+        // =============================================
+        // ADICIONAR BOTÃO DE ATUALIZAÇÃO
+        // =============================================
+        setTimeout(() => {
+          if (document.getElementById("btn-atualizar-cliente")) return;
 
-                const header = document.querySelector('.content-header');
-                if (!header) return;
+          const header = document.querySelector(".content-header");
+          if (!header) return;
 
-                const titulo = header.querySelector('.cliente-titulo');
-                if (!titulo) return;
+          const titulo = header.querySelector(".cliente-titulo");
+          if (!titulo) return;
 
-                const btn = document.createElement('button');
-                btn.id = 'btn-atualizar-cliente';
-                btn.innerHTML = '🔄 Atualizar Agora';
-                btn.style.cssText = `
+          const btn = document.createElement("button");
+          btn.id = "btn-atualizar-cliente";
+          btn.innerHTML = "🔄 Atualizar Agora";
+          btn.style.cssText = `
                     background: #28a745;
                     color: white;
                     border: none;
@@ -963,33 +994,32 @@
                     vertical-align: middle;
                 `;
 
-                btn.onmouseover = () => btn.style.background = '#218838';
-                btn.onmouseout = () => btn.style.background = '#28a745';
-                btn.onclick = () => forcarColetaCliente(cliente.id_unico);
+          btn.onmouseover = () => (btn.style.background = "#218838");
+          btn.onmouseout = () => (btn.style.background = "#28a745");
+          btn.onclick = () => forcarColetaCliente(cliente.id_unico);
 
-                titulo.appendChild(btn);
-            }, 100);
-        }
-        
-        // =============================================
-        // FUNÇÃO DE LOGOUT
-        // =============================================
-        function fazerLogout() {
-            fetch('/api/logout', {
-                method: 'GET'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = '/login.html';
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao fazer logout:', error);
-                    window.location.href = '/login.html';
-                });
-        }
+          titulo.appendChild(btn);
+        }, 100);
+      }
+
+      // =============================================
+      // FUNÇÃO DE LOGOUT
+      // =============================================
+      function fazerLogout() {
+        fetch("/api/logout", {
+          method: "GET",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              window.location.href = "/login.html";
+            }
+          })
+          .catch((error) => {
+            console.error("Erro ao fazer logout:", error);
+            window.location.href = "/login.html";
+          });
+      }
     </script>
-</body>
-
+  </body>
 </html>
