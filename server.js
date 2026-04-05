@@ -274,12 +274,21 @@ app.get('/api/dados', (req, res) => {
                     // Extrair informações do cliente (podem mudar)
                     const dadosRecebidos = ultimo.dados || {};
 
+                    // Carregar status ativo do cliente
+                    const clienteStatusPath = path.join(__dirname, 'config', `${idUnico}_status.json`);
+                    let ativo = true;
+                    if (fs.existsSync(clienteStatusPath)) {
+                        const status = JSON.parse(fs.readFileSync(clienteStatusPath, 'utf8'));
+                        ativo = status.ativo !== false;
+                    }
+
                     const clienteInfo = {
-                        id_unico: idUnico,                    // ← NUNCA MUDA (identificador real)
-                        id_obra: dadosRecebidos.id_obra || '', // ← PODE MUDAR
-                        nome: dadosRecebidos.cliente || 'Cliente sem nome', // ← PODE MUDAR
+                        id_unico: idUnico,
+                        id_obra: dadosRecebidos.id_obra || '',
+                        nome: dadosRecebidos.cliente || 'Cliente sem nome',
                         cidade: dadosRecebidos.cidade || '',
                         ultimaAtualizacao: ultimo.timestamp,
+                        ativo: ativo,  // ← LINHA ADICIONADA
                         impressoras: dadosRecebidos.dados || []
                     };
 
@@ -341,6 +350,139 @@ app.get('/api/dados', (req, res) => {
 // Rota principal
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
+
+// =============================================
+// 4. ROTAS DE ADMINISTRAÇÃO
+// =============================================
+
+// Buscar todos os clientes (incluindo inativos)
+app.get('/api/admin/clientes', (req, res) => {
+    try {
+        const dadosDir = path.join(__dirname, 'dados');
+        if (!fs.existsSync(dadosDir)) {
+            return res.json([]);
+        }
+
+        const arquivos = fs.readdirSync(dadosDir);
+        const todosClientes = [];
+
+        arquivos.forEach(arquivo => {
+            if (arquivo.endsWith('.json')) {
+                const historico = JSON.parse(fs.readFileSync(path.join(dadosDir, arquivo), 'utf8'));
+                if (historico.length > 0) {
+                    const ultimo = historico[historico.length - 1];
+                    const idUnico = arquivo.replace('cliente_', '').replace('.json', '');
+                    const dadosRecebidos = ultimo.dados || {};
+
+                    // Carregar status ativo (padrão true se não existir)
+                    const clienteStatusPath = path.join(__dirname, 'config', `${idUnico}_status.json`);
+                    let ativo = true;
+                    if (fs.existsSync(clienteStatusPath)) {
+                        const status = JSON.parse(fs.readFileSync(clienteStatusPath, 'utf8'));
+                        ativo = status.ativo !== false;
+                    }
+
+                    todosClientes.push({
+                        id_unico: idUnico,
+                        nome: dadosRecebidos.cliente || 'Cliente sem nome',
+                        cidade: dadosRecebidos.cidade || '',
+                        ultimaAtualizacao: ultimo.timestamp,
+                        ativo: ativo,
+                        impressoras: dadosRecebidos.dados || [],
+                        stats: {
+                            totalImpressoras: (dadosRecebidos.dados || []).length
+                        }
+                    });
+                }
+            }
+        });
+
+        res.json(todosClientes);
+    } catch (error) {
+        console.error('Erro em /api/admin/clientes:', error);
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+// Alternar status ativo/inativo do cliente
+app.post('/api/admin/cliente/:idUnico/toggle-status', (req, res) => {
+    try {
+        const { idUnico } = req.params;
+        const { ativo } = req.body;
+
+        // Criar pasta config se não existir
+        const configDir = path.join(__dirname, 'config');
+        if (!fs.existsSync(configDir)) {
+            fs.mkdirSync(configDir);
+        }
+
+        const statusPath = path.join(configDir, `${idUnico}_status.json`);
+        fs.writeFileSync(statusPath, JSON.stringify({ ativo: ativo, atualizado: new Date().toISOString() }));
+
+        console.log(`✅ Cliente ${idUnico} ${ativo ? 'ativado' : 'desativado'}`);
+        res.json({ status: 'ok', ativo: ativo });
+    } catch (error) {
+        console.error('Erro ao alterar status:', error);
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+// Editar impressora
+app.put('/api/admin/impressora/:idUnico/:impressoraId', (req, res) => {
+    try {
+        const { idUnico, impressoraId } = req.params;
+        const { nome, modelo, ip } = req.body;
+
+        // Criar pasta config se não existir
+        const configDir = path.join(__dirname, 'config');
+        if (!fs.existsSync(configDir)) {
+            fs.mkdirSync(configDir);
+        }
+
+        // Carregar configurações existentes das impressoras
+        const impressorasConfigPath = path.join(configDir, `${idUnico}_impressoras.json`);
+        let impressorasConfig = {};
+
+        if (fs.existsSync(impressorasConfigPath)) {
+            impressorasConfig = JSON.parse(fs.readFileSync(impressorasConfigPath, 'utf8'));
+        }
+
+        // Atualizar ou criar configuração da impressora
+        impressorasConfig[impressoraId] = {
+            nome_editavel: nome || '',
+            modelo_editavel: modelo || '',
+            ip_editavel: ip || '',
+            atualizado: new Date().toISOString()
+        };
+
+        fs.writeFileSync(impressorasConfigPath, JSON.stringify(impressorasConfig, null, 2));
+
+        console.log(`✅ Impressora ${impressoraId} do cliente ${idUnico} atualizada`);
+        res.json({ status: 'ok', impressora: impressorasConfig[impressoraId] });
+    } catch (error) {
+        console.error('Erro ao editar impressora:', error);
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+// Buscar configurações das impressoras
+app.get('/api/admin/impressoras-config/:idUnico', (req, res) => {
+    try {
+        const { idUnico } = req.params;
+        const configDir = path.join(__dirname, 'config');
+        const impressorasConfigPath = path.join(configDir, `${idUnico}_impressoras.json`);
+
+        if (fs.existsSync(impressorasConfigPath)) {
+            const config = JSON.parse(fs.readFileSync(impressorasConfigPath, 'utf8'));
+            res.json(config);
+        } else {
+            res.json({});
+        }
+    } catch (error) {
+        console.error('Erro ao buscar config das impressoras:', error);
+        res.status(500).json({ erro: error.message });
+    }
 });
 
 app.listen(PORT, () => {
